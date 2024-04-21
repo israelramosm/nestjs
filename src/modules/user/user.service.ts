@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   /**
    * Here, we have used data mapper approch for this tutorial that is why we
    * injecting repository here. Another approch can be Active records.
@@ -22,6 +24,7 @@ export class UserService {
    * @returns promise of user
    */
   create(createUserDto: CreateUserDto): Promise<User> {
+    this.logger.log('Creating User ...');
     const user: User = new User();
     user.name = createUserDto.name;
     user.age = createUserDto.age;
@@ -37,6 +40,7 @@ export class UserService {
    * @returns promise of array of users
    */
   findAll(): Promise<User[]> {
+    this.logger.log('Searching Users ...');
     return this.userRepository.find();
   }
 
@@ -46,6 +50,7 @@ export class UserService {
    * @returns promise of user
    */
   findOne(id: number): Promise<User> {
+    this.logger.log(`Searching User ${id} ...`);
     return this.userRepository.findOneBy({ id });
   }
 
@@ -57,6 +62,7 @@ export class UserService {
    * @returns promise of udpate user
    */
   update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    this.logger.log(`Updating User ${id} ...`);
     const user: User = new User();
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
@@ -73,6 +79,7 @@ export class UserService {
    * @returns nuber of rows deleted or affected
    */
   remove(id: number): Promise<{ affected?: number }> {
+    this.logger.log(`Removing User ${id} ...`);
     return this.userRepository.delete(id);
   }
 }
