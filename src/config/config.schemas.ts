@@ -20,5 +20,7 @@ export class ConfigSchemas {
     MYSQL_SYNCHRONIZE: Joi.boolean().required(),
     MYSQL_RUN_MIGRATIONS: Joi.boolean().required(),
     MYSQL_LOGGING: Joi.boolean().required(),
+    JWT_SECRET: Joi.string().required(),
+    JWT_EXPIRATION: Joi.number().required(),
   });
 }

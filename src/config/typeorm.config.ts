@@ -7,5 +7,6 @@ import pgdbConfig from 'src/config/pgdb.config';
  * Made some testing, it can only have one data source to export
  * Depending on wich datasource you want to use you can comment the other one
  */
+console.log(pgdbConfig);
 export const PgAppDataSource = new DataSource(pgdbConfig);
 // export const MysqlAppDataSource = new DataSource(mysqldbConfig);

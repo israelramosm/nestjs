@@ -41,6 +41,28 @@ podman run -dt -e MYSQL_ROOT_PASSWORD=<SenhaDoUsuárioRoot> \
 
 [TypeORM](https://orkhan.gitbook.io/typeorm/docs/using-cli)
 
-```bash
-https://orkhan.gitbook.io/typeorm/docs/using-cli
+```typeorm:cli``` should already be configured on the ```package.json``` to run the migrations as scripts
+
+Use generate to create a migration on the folder, for some reason create does not worked as expected 
+
+* If its a new db run the migration command first
+
+```shell
+npm run migration:run
 ```
+
+This will update all tables need it for the project
+
+* If you need to create a new migration run this command
+
+```shell
+npm run migration:generate src/database/migrations/pg/Init
+```
+
+* You can revert a migration with this command
+
+```shell
+npm run migration:revert
+```
+
+Make sure the migration table data on postagres have the migration files in the project.

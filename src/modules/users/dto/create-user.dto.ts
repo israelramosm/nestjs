@@ -1,43 +1,37 @@
 import {
   IsAlphanumeric,
   IsEmail,
-  IsEnum,
-  IsInt,
   IsNotEmpty,
   IsString,
   Matches,
   MinLength,
 } from 'class-validator';
-
-const passwordRegEx =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$/;
+import { PASSWORD_REGEX } from 'src/common/constants';
 
 export class CreateUserDto {
   @IsString()
-  @MinLength(2, { message: 'Name must have atleast 2 characters.' })
+  @MinLength(2, { message: 'Fisrt name must have atleast 2 characters.' })
   @IsNotEmpty()
-  name: string;
+  first_name: string;
+
+  @IsString()
+  @MinLength(2, { message: 'Last name must have atleast 2 characters.' })
+  @IsNotEmpty()
+  last_name: string;
 
   @IsNotEmpty()
   @MinLength(3, { message: 'Username must have atleast 3 characters.' })
-  @IsAlphanumeric(null, {
+  @IsAlphanumeric(undefined, {
     message: 'Username does not allow other than alpha numeric chars.',
   })
   username: string;
 
   @IsNotEmpty()
-  @IsEmail(null, { message: 'Please provide valid Email.' })
+  @IsEmail(undefined, { message: 'Please provide valid Email.' })
   email: string;
 
-  @IsInt()
-  age: number;
-
-  @IsString()
-  @IsEnum(['f', 'm', 'u'])
-  gender: string;
-
   @IsNotEmpty()
-  @Matches(passwordRegEx, {
+  @Matches(PASSWORD_REGEX, {
     message: `Password must contain Minimum 8 and maximum 20 characters, 
       at least one uppercase letter, 
       one lowercase letter, 
