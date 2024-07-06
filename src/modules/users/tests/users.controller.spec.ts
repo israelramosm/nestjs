@@ -31,9 +31,7 @@ describe('UsersController', () => {
 
   it('create => Should create a new user and return its data', async () => {
     // arrange
-    jest
-      .spyOn(userController, 'create')
-      .mockReturnValue(Promise.resolve(userResult));
+    jest.spyOn(userController, 'create').mockResolvedValue(userResult);
 
     // act
     const result = await userController.create(createUserDto);
@@ -48,9 +46,7 @@ describe('UsersController', () => {
   it('findAll => should return an array of user', async () => {
     //arrange
     const users = [userResult];
-    jest
-      .spyOn(userController, 'findAll')
-      .mockReturnValue(Promise.resolve(users));
+    jest.spyOn(userController, 'findAll').mockResolvedValue(users);
 
     //act
     const result = await userController.findAll();
@@ -65,9 +61,7 @@ describe('UsersController', () => {
     //arrange
     const id = userResult.user_id;
 
-    jest
-      .spyOn(userController, 'findOneById')
-      .mockReturnValue(Promise.resolve(userResult));
+    jest.spyOn(userController, 'findOneById').mockResolvedValue(userResult);
 
     //act
     const result = await userController.findOneById(id);
@@ -83,9 +77,7 @@ describe('UsersController', () => {
     //arrange
     const id = userResult.user_id;
 
-    jest
-      .spyOn(userController, 'remove')
-      .mockReturnValue(Promise.resolve(userRemovedResult));
+    jest.spyOn(userController, 'remove').mockResolvedValue(userRemovedResult);
 
     //act
     const result = await userController.remove(id);

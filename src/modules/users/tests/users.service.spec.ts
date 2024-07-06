@@ -95,7 +95,7 @@ describe('UsersService', () => {
     expect(result).toEqual(userResult);
   });
 
-  it('findOneByUsername => should find a user by a given id and return its data', async () => {
+  it('findOneByUsername => should find a user by a given username and return its data', async () => {
     //arrange
     const email = userResult.email;
 
