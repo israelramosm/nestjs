@@ -2,15 +2,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UsersService } from '../users.service';
 import { User } from '../entities/user.entity';
-import { createUserDto, userCallWith, userResult } from './mocks/data.mocks';
 import { ProfilesService } from 'src/modules/profiles/profiles.service';
 import { PasswordsService } from 'src/modules/passwords/passwords.service';
 import { findUserByUserIdQuery } from '../queries/user.queries';
 import {
-  mockPasswordService,
-  mockProfileService,
-  mockUserRepository,
-} from './mocks/providers.mocks';
+  mockRepository,
+  mockRestServiceData,
+} from 'src/utils/tests/mocks/providers.mocks';
+import {
+  createUserDto,
+  password,
+  profile,
+  userCallWith,
+  userResult,
+} from 'src/utils/tests/mocks/data.mocks';
 
 describe('UsersService', () => {
   let userService: UsersService;
@@ -21,15 +26,15 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
+          useValue: mockRepository,
         },
         {
           provide: ProfilesService,
-          useValue: mockProfileService,
+          useValue: mockRestServiceData(profile),
         },
         {
           provide: PasswordsService,
-          useValue: mockPasswordService,
+          useValue: mockRestServiceData(password),
         },
       ],
     }).compile();
@@ -43,14 +48,14 @@ describe('UsersService', () => {
 
   it('create => Should create a new user and return its data', async () => {
     // arrange
-    jest.spyOn(mockUserRepository, 'save').mockReturnValue(userResult);
+    jest.spyOn(mockRepository, 'save').mockReturnValue(userResult);
 
     // act
     const result = await userService.create(createUserDto);
 
     // assert
-    expect(mockUserRepository.save).toHaveBeenCalled();
-    expect(mockUserRepository.save).toHaveBeenCalledWith(userCallWith);
+    expect(mockRepository.save).toHaveBeenCalled();
+    expect(mockRepository.save).toHaveBeenCalledWith(userCallWith);
 
     expect(result).toStrictEqual(userResult);
   });
@@ -58,13 +63,13 @@ describe('UsersService', () => {
   it('findAll => should return an array of user', async () => {
     //arrange
     const users = [userResult];
-    jest.spyOn(mockUserRepository, 'find').mockReturnValue(users);
+    jest.spyOn(mockRepository, 'find').mockReturnValue(users);
 
     //act
     const result = await userService.findAll();
 
     // assert
-    expect(mockUserRepository.find).toHaveBeenCalled();
+    expect(mockRepository.find).toHaveBeenCalled();
 
     expect(result).toEqual(users);
   });
@@ -73,14 +78,14 @@ describe('UsersService', () => {
     //arrange
     const id = userResult.user_id;
 
-    jest.spyOn(mockUserRepository, 'findOne').mockReturnValue(userResult);
+    jest.spyOn(mockRepository, 'findOne').mockReturnValue(userResult);
 
     //act
     const result = await userService.findOneById(id);
 
     // assert
-    expect(mockUserRepository.findOne).toHaveBeenCalled();
-    expect(mockUserRepository.findOne).toHaveBeenCalledWith(
+    expect(mockRepository.findOne).toHaveBeenCalled();
+    expect(mockRepository.findOne).toHaveBeenCalledWith(
       findUserByUserIdQuery(id),
     );
 
@@ -91,14 +96,14 @@ describe('UsersService', () => {
     //arrange
     const id = userResult.user_id;
 
-    jest.spyOn(mockUserRepository, 'delete').mockReturnValue(userResult);
+    jest.spyOn(mockRepository, 'delete').mockReturnValue(userResult);
 
     //act
     const result = await userService.remove(id);
 
     // assert
-    expect(mockUserRepository.delete).toHaveBeenCalled();
-    expect(mockUserRepository.delete).toHaveBeenCalledWith(id);
+    expect(mockRepository.delete).toHaveBeenCalled();
+    expect(mockRepository.delete).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(userResult);
   });

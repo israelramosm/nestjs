@@ -4,11 +4,11 @@ import {
   createUserDto,
   userRemovedResult,
   userResult,
-} from './mocks/data.mocks';
-import { mockUserService } from './mocks/providers.mocks';
+} from '../../../utils/tests/mocks/data.mocks';
+import { mockUserRestService } from '../../../utils/tests/mocks/providers.mocks';
 import { UsersController } from '../users.controller';
 
-describe('UsersService', () => {
+describe('UsersController', () => {
   let userController: UsersController;
 
   beforeEach(async () => {
@@ -17,16 +17,8 @@ describe('UsersService', () => {
       providers: [
         {
           provide: UsersService,
-          useValue: mockUserService,
+          useValue: mockUserRestService,
         },
-        // {
-        //   provide: ProfilesService,
-        //   useValue: mockProfileService,
-        // },
-        // {
-        //   provide: PasswordsService,
-        //   useValue: mockPasswordService,
-        // },
       ],
     }).compile();
 
