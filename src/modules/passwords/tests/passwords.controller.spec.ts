@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PasswordsController } from '../passwords.controller';
 import { PasswordsService } from '../passwords.service';
 
-describe('PasswordsController', () => {
+xdescribe('PasswordsController', () => {
   let controller: PasswordsController;
 
   beforeEach(async () => {

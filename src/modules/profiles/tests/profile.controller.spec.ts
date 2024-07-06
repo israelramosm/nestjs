@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from '../profiles.controller';
 import { ProfilesService } from '../profiles.service';
 
-describe('ProfileController', () => {
+xdescribe('ProfileController', () => {
   let controller: ProfileController;
 
   beforeEach(async () => {

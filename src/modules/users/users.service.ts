@@ -37,7 +37,7 @@ export class UsersService {
    * @returns promise of user
    */
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, first_name, last_name, username, password } = createUserDto;
+    const { email, firstname, lastname, username, password } = createUserDto;
     this.logger.log(`Create user :: ${email} ...`);
     const userExist = await this.findOneOnRepository(
       findUserByEmailQuery(email),
@@ -52,8 +52,8 @@ export class UsersService {
     const profile = await this.profilesService.create({ username });
 
     const user: User = new User();
-    user.first_name = first_name;
-    user.last_name = last_name;
+    user.first_name = firstname;
+    user.last_name = lastname;
     user.email = email;
     user.password = pass;
     user.profile = profile;
@@ -99,12 +99,12 @@ export class UsersService {
    * @returns promise of udpate user
    */
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const { email, first_name, last_name } = updateUserDto;
+    const { email, firstname, lastname } = updateUserDto;
     this.logger.log(`Update user :: ${userId} ...`);
 
     const user: User = new User();
-    user.first_name = first_name;
-    user.last_name = last_name;
+    user.first_name = firstname;
+    user.last_name = lastname;
     user.email = email;
     user.user_id = userId;
 
