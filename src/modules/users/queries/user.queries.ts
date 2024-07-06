@@ -13,5 +13,5 @@ export const findUserByEmailQuery = (email: string): FindOneOptions => ({
     password: true,
     profile: true,
   },
-  where: [{ email }],
+  where: { email },
 });

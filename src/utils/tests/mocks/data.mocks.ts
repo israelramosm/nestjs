@@ -21,7 +21,7 @@ export const createProfileDto = {
   username: 'israelramos',
 } as CreateProfileDto;
 
-export const password = {
+export const passwordResult = {
   user: null,
   password_id: passwordId,
   password: createUserDto.password,
@@ -31,7 +31,7 @@ export const password = {
   deleted_at: null,
 } as Password;
 
-export const profile = {
+export const profileResult = {
   profile_id: profileId,
   username: createUserDto.username,
   user: null,
@@ -47,8 +47,8 @@ export const userCallWith = {
   first_name: createUserDto.firstname,
   last_name: createUserDto.lastname,
   email: createUserDto.email,
-  password: password,
-  profile: profile,
+  password: passwordResult,
+  profile: profileResult,
   is_verified: false,
 } as User;
 
@@ -57,8 +57,8 @@ export const userResult = {
   first_name: createUserDto.firstname,
   last_name: createUserDto.lastname,
   email: createUserDto.email,
-  password: password,
-  profile: profile,
+  password: passwordResult,
+  profile: profileResult,
   is_verified: false,
   created_at: new Date(),
   updated_at: new Date(),

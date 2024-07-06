@@ -79,19 +79,6 @@ describe('UsersController', () => {
     expect(result).toEqual(userResult);
   });
 
-  // TODO: Need to work on controller and api for this implementation
-  xit('findOneByEmail => should find a user by a given email and return its data', async () => {
-    //arrange
-    // const email = createUserDto.email;
-    // jest.spyOn(userController, 'findOneByEmail').mockReturnValue(userResult);
-    //act
-    // const result = await userController.findOneByEmail(email);
-    // assert
-    // expect(userController.findOneByEmail).toHaveBeenCalled();
-    // expect(userController.findOneByEmail).toHaveBeenCalledWith(email);
-    // expect(result).toEqual(userResult);
-  });
-
   it('remove => should find a user by a given id, remove and then return Number of affected rows', async () => {
     //arrange
     const id = userResult.user_id;
@@ -109,4 +96,7 @@ describe('UsersController', () => {
 
     expect(result).toEqual(userRemovedResult);
   });
+
+  // TODO: Need to work on controller and api for this implementation
+  xit('findOneByEmail => should find a user by a given email and return its data', () => {});
 });
