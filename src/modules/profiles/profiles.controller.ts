@@ -26,7 +26,7 @@ export class ProfileController {
   }
 
   @Get(':profileId')
-  findOne(@Param('profileId') profileId: string) {
+  findOneById(@Param('profileId') profileId: string) {
     return this.profilesService.findOneById(profileId);
   }
 
