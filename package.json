@@ -91,7 +91,14 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "src/**/*.(t|j)s"
+    ],
+    "coveragePathIgnorePatterns": [
+      ".module.ts",
+      ".mocks.ts",
+      "main.ts",
+      "src/config",
+      "src/database"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
