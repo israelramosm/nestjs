@@ -121,6 +121,8 @@ export class UsersService {
     const user = await this.findOneById(userId);
     const { user_id, email, first_name, last_name, profile, password } = user;
 
+    const userResultRemoved = await this.userRepository.delete(user_id);
+
     const profileRemoved = await this.profilesService.remove(
       profile.profile_id,
     );
@@ -128,8 +130,6 @@ export class UsersService {
     const passwordRemoved = await this.passwordsService.remove(
       password.password_id,
     );
-
-    const userResultRemoved = await this.userRepository.delete(user_id);
     return {
       ...userResultRemoved,
       user_id,
