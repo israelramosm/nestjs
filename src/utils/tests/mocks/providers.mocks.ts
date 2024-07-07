@@ -13,6 +13,11 @@ export const mockRestService = {
   delete: jest.fn(),
 };
 
+export const mockAuthService = {
+  validateUser: jest.fn(),
+  login: jest.fn(),
+};
+
 export const mockRestServiceData = (resolvedValue) => ({
   create: jest.fn().mockResolvedValue(resolvedValue),
   findAll: jest.fn().mockResolvedValue([resolvedValue]),

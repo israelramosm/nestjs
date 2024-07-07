@@ -9,6 +9,7 @@ import { CreatePasswordDto } from 'src/modules/passwords/dto/create-password.dto
 const passwordId = uuidv4();
 const profileId = uuidv4();
 const userId = uuidv4();
+const sub = uuidv4();
 
 export const createUserDto = {
   firstname: 'Israel',
@@ -92,4 +93,25 @@ export const userRemovedResult = {
   last_name: createUserDto.lastname,
   profile: profileRemovedResult,
   password: passwordRemovedResult,
+};
+
+export const authLoginDto = {
+  email: createUserDto.email,
+  password: createUserDto.password,
+};
+
+export const authProfileResult = {
+  username: createUserDto.username,
+  sub,
+  iat: 1720235822,
+  exp: 1720322222,
+};
+
+export const reqAuthProfile = {
+  user: authProfileResult,
+} as unknown as Request;
+
+export const authLoginResult = {
+  access_token:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlzcmFlbHJhbW9zeCIsInN1YiI6IjZjOWExN2JkLWE1NTUtNGU4ZS1hZmRkLWEyOWNjOTU2ZDY5NCIsImlhdCI6MTcyMDIzNTgyMiwiZXhwIjoxNzIwMzIyMjIyfQ.9uWM9zX65PNmUk6EiV4EGe9dHv6CI5rVahj6hD-qs2I',
 };
