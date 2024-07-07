@@ -111,6 +111,11 @@ export const reqAuthProfile = {
   user: authProfileResult,
 } as unknown as Request;
 
+export const jwtPayload = {
+  username: profileResult.username,
+  sub: userResult.user_id,
+};
+
 export const authLoginResult = {
   access_token:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlzcmFlbHJhbW9zeCIsInN1YiI6IjZjOWExN2JkLWE1NTUtNGU4ZS1hZmRkLWEyOWNjOTU2ZDY5NCIsImlhdCI6MTcyMDIzNTgyMiwiZXhwIjoxNzIwMzIyMjIyfQ.9uWM9zX65PNmUk6EiV4EGe9dHv6CI5rVahj6hD-qs2I',

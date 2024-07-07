@@ -30,3 +30,7 @@ export const mockUserRestService = {
   ...mockRestService,
   findOneByEmail: jest.fn(),
 };
+
+export const mockJWTService = {
+  sign: jest.fn(),
+};
