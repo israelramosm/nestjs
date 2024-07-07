@@ -4,6 +4,7 @@ import { Profile } from 'src/modules/profiles/entities/profile.entity';
 import { User } from '../../../modules/users/entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateProfileDto } from 'src/modules/profiles/dto/create-profile.dto';
+import { CreatePasswordDto } from 'src/modules/passwords/dto/create-password.dto';
 
 const passwordId = uuidv4();
 const profileId = uuidv4();
@@ -18,8 +19,12 @@ export const createUserDto = {
 } as CreateUserDto;
 
 export const createProfileDto = {
-  username: 'israelramos',
+  username: createUserDto.username,
 } as CreateProfileDto;
+
+export const createPasswordDto = {
+  password: createUserDto.password,
+} as CreatePasswordDto;
 
 export const passwordResult = {
   user: null,
@@ -69,7 +74,7 @@ export const profileRemovedResult = {
   raw: [],
   affected: 1,
   profile_id: profileId,
-  username: 'israelramos',
+  username: createUserDto.username,
 };
 
 export const passwordRemovedResult = {
@@ -82,9 +87,9 @@ export const userRemovedResult = {
   raw: [],
   affected: 1,
   user_id: userId,
-  email: 'arnulfo_israel@hotmail.com',
-  first_name: 'Israel',
-  last_name: ' Ramos',
+  email: createUserDto.email,
+  first_name: createUserDto.firstname,
+  last_name: createUserDto.lastname,
   profile: profileRemovedResult,
   password: passwordRemovedResult,
 };

@@ -26,7 +26,7 @@ export class PasswordsController {
   }
 
   @Get(':passwordId')
-  findOne(@Param('passwordId') passwordId: string) {
+  findOneById(@Param('passwordId') passwordId: string) {
     return this.passwordsService.findOneById(passwordId);
   }
 
