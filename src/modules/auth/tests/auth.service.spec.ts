@@ -7,7 +7,6 @@ import {
 } from 'src/utils/tests/mocks/data.mocks';
 import { AuthService } from '../auth.service';
 import {
-  mockAuthService,
   mockJWTService,
   mockUserRestService,
 } from 'src/utils/tests/mocks/providers.mocks';

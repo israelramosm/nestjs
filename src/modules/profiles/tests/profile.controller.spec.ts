@@ -31,14 +31,14 @@ describe('ProfileController', () => {
 
   it('create => Should create a new profile and return its data', async () => {
     // arrange
-    jest.spyOn(profileController, 'create').mockResolvedValue(profileResult);
+    jest.spyOn(mockRestService, 'create').mockResolvedValue(profileResult);
 
     // act
     const result = await profileController.create(createProfileDto);
 
     // assert
-    expect(profileController.create).toHaveBeenCalled();
-    expect(profileController.create).toHaveBeenCalledWith(createProfileDto);
+    expect(mockRestService.create).toHaveBeenCalled();
+    expect(mockRestService.create).toHaveBeenCalledWith(createProfileDto);
 
     expect(result).toStrictEqual(profileResult);
   });
@@ -46,13 +46,13 @@ describe('ProfileController', () => {
   it('findAll => should return an array of profile', async () => {
     //arrange
     const profiles = [profileResult];
-    jest.spyOn(profileController, 'findAll').mockResolvedValue(profiles);
+    jest.spyOn(mockRestService, 'findAll').mockResolvedValue(profiles);
 
     //act
     const result = await profileController.findAll();
 
     // assert
-    expect(profileController.findAll).toHaveBeenCalled();
+    expect(mockRestService.findAll).toHaveBeenCalled();
 
     expect(result).toEqual(profiles);
   });
@@ -61,18 +61,31 @@ describe('ProfileController', () => {
     //arrange
     const id = profileResult.profile_id;
 
-    jest
-      .spyOn(profileController, 'findOneById')
-      .mockResolvedValue(profileResult);
+    jest.spyOn(mockRestService, 'findOneById').mockResolvedValue(profileResult);
 
     //act
     const result = await profileController.findOneById(id);
 
     // assert
-    expect(profileController.findOneById).toHaveBeenCalled();
-    expect(profileController.findOneById).toHaveBeenCalledWith(id);
+    expect(mockRestService.findOneById).toHaveBeenCalled();
+    expect(mockRestService.findOneById).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(profileResult);
+  });
+
+  it('update => Should update a new profile and return its data', async () => {
+    // arrange
+    const id = profileResult.profile_id;
+    jest.spyOn(mockRestService, 'update').mockResolvedValue(profileResult);
+
+    // act
+    const result = await profileController.update(id, createProfileDto);
+
+    // assert
+    expect(mockRestService.update).toHaveBeenCalled();
+    expect(mockRestService.update).toHaveBeenCalledWith(id, createProfileDto);
+
+    expect(result).toStrictEqual(profileResult);
   });
 
   it('remove => should find a profile by a given id, remove and then return Number of affected rows', async () => {
@@ -80,15 +93,15 @@ describe('ProfileController', () => {
     const id = profileResult.profile_id;
 
     jest
-      .spyOn(profileController, 'remove')
+      .spyOn(mockRestService, 'remove')
       .mockResolvedValue(profileRemovedResult);
 
     //act
     const result = await profileController.remove(id);
 
     // assert
-    expect(profileController.remove).toHaveBeenCalled();
-    expect(profileController.remove).toHaveBeenCalledWith(id);
+    expect(mockRestService.remove).toHaveBeenCalled();
+    expect(mockRestService.remove).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(profileRemovedResult);
   });

@@ -11,6 +11,7 @@ import {
   findProfileByProfileIdQuery,
   findProfileByUsernameQuery,
 } from '../queries/profile.queries';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('ProfileService', () => {
   let profileService: ProfilesService;
@@ -97,6 +98,21 @@ describe('ProfileService', () => {
     expect(result).toEqual(profileResult);
   });
 
+  it('update => Should update a new profile and return its data', async () => {
+    // arrange
+    const id = profileResult.profile_id;
+    jest.spyOn(mockRepository, 'save').mockReturnValue(profileResult);
+
+    // act
+    const result = await profileService.update(id, createProfileDto);
+
+    // assert
+    expect(mockRepository.save).toHaveBeenCalled();
+    expect(mockRepository.save).toHaveBeenCalledWith(createProfileDto);
+
+    expect(result).toStrictEqual(profileResult);
+  });
+
   it('remove => should find a profile by a given id, remove and then return Number of affected rows', async () => {
     //arrange
     const id = profileResult.profile_id;
@@ -111,5 +127,25 @@ describe('ProfileService', () => {
     expect(mockRepository.delete).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(profileResult);
+  });
+
+  describe('Error', () => {
+    it('create => Should return a HttpException if username exist', async () => {
+      // arrange
+      jest.spyOn(mockRepository, 'findOne').mockResolvedValue(profileResult);
+
+      // act
+      const result = profileService.create(createProfileDto);
+
+      // assert
+      expect(mockRepository.findOne).toHaveBeenCalled();
+      expect(mockRepository.findOne).toHaveBeenCalledWith(
+        findProfileByUsernameQuery(createProfileDto.username),
+      );
+
+      await expect(result).rejects.toEqual(
+        new HttpException('Username already exist', HttpStatus.CONFLICT),
+      );
+    });
   });
 });

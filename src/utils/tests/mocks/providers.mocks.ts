@@ -2,6 +2,7 @@ export const mockRepository = {
   save: jest.fn(),
   find: jest.fn(),
   findOne: jest.fn(),
+  update: jest.fn(),
   delete: jest.fn(),
 };
 
@@ -10,7 +11,7 @@ export const mockRestService = {
   findAll: jest.fn(),
   findOneById: jest.fn(),
   update: jest.fn(),
-  delete: jest.fn(),
+  remove: jest.fn(),
 };
 
 export const mockAuthService = {

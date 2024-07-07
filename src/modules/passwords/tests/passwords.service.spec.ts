@@ -79,6 +79,25 @@ describe('PasswordsService', () => {
     expect(result).toEqual(passwordResult);
   });
 
+  it('uptade => Should update a new profile and return its data', async () => {
+    // arrange
+    const password_id = passwordResult.password_id;
+    jest.spyOn(mockRepository, 'save').mockReturnValue(passwordResult);
+    jest.spyOn(bcrypt, 'hash').mockReturnValue(createPasswordDto.password);
+
+    // act
+    const result = await passwordsService.update(
+      password_id,
+      createPasswordDto,
+    );
+
+    // assert
+    expect(mockRepository.save).toHaveBeenCalled();
+    expect(mockRepository.save).toHaveBeenCalledWith(createPasswordDto);
+
+    expect(result).toStrictEqual(passwordResult);
+  });
+
   it('remove => should find a profile by a given id, remove and then return Number of affected rows', async () => {
     //arrange
     const id = passwordResult.password_id;

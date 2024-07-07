@@ -31,14 +31,14 @@ describe('UsersController', () => {
 
   it('create => Should create a new user and return its data', async () => {
     // arrange
-    jest.spyOn(userController, 'create').mockResolvedValue(userResult);
+    jest.spyOn(mockUserRestService, 'create').mockResolvedValue(userResult);
 
     // act
     const result = await userController.create(createUserDto);
 
     // assert
-    expect(userController.create).toHaveBeenCalled();
-    expect(userController.create).toHaveBeenCalledWith(createUserDto);
+    expect(mockUserRestService.create).toHaveBeenCalled();
+    expect(mockUserRestService.create).toHaveBeenCalledWith(createUserDto);
 
     expect(result).toStrictEqual(userResult);
   });
@@ -46,13 +46,13 @@ describe('UsersController', () => {
   it('findAll => should return an array of user', async () => {
     //arrange
     const users = [userResult];
-    jest.spyOn(userController, 'findAll').mockResolvedValue(users);
+    jest.spyOn(mockUserRestService, 'findAll').mockResolvedValue(users);
 
     //act
     const result = await userController.findAll();
 
     // assert
-    expect(userController.findAll).toHaveBeenCalled();
+    expect(mockUserRestService.findAll).toHaveBeenCalled();
 
     expect(result).toEqual(users);
   });
@@ -61,30 +61,49 @@ describe('UsersController', () => {
     //arrange
     const id = userResult.user_id;
 
-    jest.spyOn(userController, 'findOneById').mockResolvedValue(userResult);
+    jest
+      .spyOn(mockUserRestService, 'findOneById')
+      .mockResolvedValue(userResult);
 
     //act
     const result = await userController.findOneById(id);
 
     // assert
-    expect(userController.findOneById).toHaveBeenCalled();
-    expect(userController.findOneById).toHaveBeenCalledWith(id);
+    expect(mockUserRestService.findOneById).toHaveBeenCalled();
+    expect(mockUserRestService.findOneById).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(userResult);
+  });
+
+  it('update => Should update a new user and return its data', async () => {
+    // arrange
+    const id = userResult.user_id;
+    jest.spyOn(mockUserRestService, 'update').mockResolvedValue(userResult);
+
+    // act
+    const result = await userController.update(id, createUserDto);
+
+    // assert
+    expect(mockUserRestService.update).toHaveBeenCalled();
+    expect(mockUserRestService.update).toHaveBeenCalledWith(id, createUserDto);
+
+    expect(result).toStrictEqual(userResult);
   });
 
   it('remove => should find a user by a given id, remove and then return Number of affected rows', async () => {
     //arrange
     const id = userResult.user_id;
 
-    jest.spyOn(userController, 'remove').mockResolvedValue(userRemovedResult);
+    jest
+      .spyOn(mockUserRestService, 'remove')
+      .mockResolvedValue(userRemovedResult);
 
     //act
     const result = await userController.remove(id);
 
     // assert
-    expect(userController.remove).toHaveBeenCalled();
-    expect(userController.remove).toHaveBeenCalledWith(id);
+    expect(mockUserRestService.remove).toHaveBeenCalled();
+    expect(mockUserRestService.remove).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(userRemovedResult);
   });

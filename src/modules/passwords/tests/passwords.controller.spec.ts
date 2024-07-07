@@ -31,14 +31,14 @@ describe('PasswordsController', () => {
 
   it('create => Should create a new password and return its data', async () => {
     // arrange
-    jest.spyOn(passwordController, 'create').mockResolvedValue(passwordResult);
+    jest.spyOn(mockRestService, 'create').mockResolvedValue(passwordResult);
 
     // act
     const result = await passwordController.create(createPasswordDto);
 
     // assert
-    expect(passwordController.create).toHaveBeenCalled();
-    expect(passwordController.create).toHaveBeenCalledWith(createPasswordDto);
+    expect(mockRestService.create).toHaveBeenCalled();
+    expect(mockRestService.create).toHaveBeenCalledWith(createPasswordDto);
 
     expect(result).toStrictEqual(passwordResult);
   });
@@ -46,13 +46,13 @@ describe('PasswordsController', () => {
   it('findAll => should return an array of password', async () => {
     //arrange
     const passwords = [passwordResult];
-    jest.spyOn(passwordController, 'findAll').mockResolvedValue(passwords);
+    jest.spyOn(mockRestService, 'findAll').mockResolvedValue(passwords);
 
     //act
     const result = await passwordController.findAll();
 
     // assert
-    expect(passwordController.findAll).toHaveBeenCalled();
+    expect(mockRestService.findAll).toHaveBeenCalled();
 
     expect(result).toEqual(passwords);
   });
@@ -62,17 +62,32 @@ describe('PasswordsController', () => {
     const id = passwordResult.password_id;
 
     jest
-      .spyOn(passwordController, 'findOneById')
+      .spyOn(mockRestService, 'findOneById')
       .mockResolvedValue(passwordResult);
 
     //act
     const result = await passwordController.findOneById(id);
 
     // assert
-    expect(passwordController.findOneById).toHaveBeenCalled();
-    expect(passwordController.findOneById).toHaveBeenCalledWith(id);
+    expect(mockRestService.findOneById).toHaveBeenCalled();
+    expect(mockRestService.findOneById).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(passwordResult);
+  });
+
+  it('update => Should update a new password and return its data', async () => {
+    // arrange
+    const id = passwordResult.password_id;
+    jest.spyOn(mockRestService, 'update').mockResolvedValue(passwordResult);
+
+    // act
+    const result = await passwordController.update(id, createPasswordDto);
+
+    // assert
+    expect(mockRestService.update).toHaveBeenCalled();
+    expect(mockRestService.update).toHaveBeenCalledWith(id, createPasswordDto);
+
+    expect(result).toStrictEqual(passwordResult);
   });
 
   it('remove => should find a password by a given id, remove and then return Number of affected rows', async () => {
@@ -80,15 +95,15 @@ describe('PasswordsController', () => {
     const id = passwordResult.password_id;
 
     jest
-      .spyOn(passwordController, 'remove')
+      .spyOn(mockRestService, 'remove')
       .mockResolvedValue(passwordRemovedResult);
 
     //act
     const result = await passwordController.remove(id);
 
     // assert
-    expect(passwordController.remove).toHaveBeenCalled();
-    expect(passwordController.remove).toHaveBeenCalledWith(id);
+    expect(mockRestService.remove).toHaveBeenCalled();
+    expect(mockRestService.remove).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(passwordRemovedResult);
   });

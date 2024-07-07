@@ -19,6 +19,7 @@ import {
   userCallWith,
   userResult,
 } from 'src/utils/tests/mocks/data.mocks';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('UsersService', () => {
   let userService: UsersService;
@@ -113,6 +114,21 @@ describe('UsersService', () => {
     expect(result).toEqual(userResult);
   });
 
+  it('update => Should update a new user and return its data', async () => {
+    // arrange
+    const id = userResult.user_id;
+    jest.spyOn(mockRepository, 'save').mockReturnValue(userResult);
+
+    // act
+    const result = await userService.update(id, createUserDto);
+
+    // assert
+    expect(mockRepository.save).toHaveBeenCalled();
+    expect(mockRepository.save).toHaveBeenCalledWith(userCallWith);
+
+    expect(result).toStrictEqual(userResult);
+  });
+
   it('remove => should find a user by a given id, remove and then return Number of affected rows', async () => {
     //arrange
     const id = userResult.user_id;
@@ -127,5 +143,25 @@ describe('UsersService', () => {
     expect(mockRepository.delete).toHaveBeenCalledWith(id);
 
     expect(result).toEqual(userResult);
+  });
+
+  describe('Error', () => {
+    it('create => Should return a HttpException if user email exist', async () => {
+      // arrange
+      jest.spyOn(mockRepository, 'findOne').mockResolvedValue(userResult);
+
+      // act
+      const result = userService.create(createUserDto);
+
+      // assert
+      expect(mockRepository.findOne).toHaveBeenCalled();
+      expect(mockRepository.findOne).toHaveBeenCalledWith(
+        findUserByEmailQuery(createUserDto.email),
+      );
+
+      await expect(result).rejects.toEqual(
+        new HttpException('User email already exist', HttpStatus.CONFLICT),
+      );
+    });
   });
 });
