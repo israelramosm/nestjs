@@ -4,8 +4,8 @@ import {
   createUserDto,
   userRemovedResult,
   userResult,
-} from '../../../utils/tests/mocks/data.mocks';
-import { mockUserRestService } from '../../../utils/tests/mocks/providers.mocks';
+} from 'src/utils/tests/mocks/data.mocks';
+import { mockUserRestService } from 'src/utils/tests/mocks/providers.mocks';
 import { UsersController } from '../users.controller';
 
 describe('UsersController', () => {

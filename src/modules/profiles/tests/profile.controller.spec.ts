@@ -3,7 +3,7 @@ import {
   profileResult,
   profileRemovedResult,
   createProfileDto,
-} from '../../../utils/tests/mocks/data.mocks';
+} from 'src/utils/tests/mocks/data.mocks';
 import { ProfileController } from '../profiles.controller';
 import { mockRestService } from 'src/utils/tests/mocks/providers.mocks';
 import { ProfilesService } from '../profiles.service';

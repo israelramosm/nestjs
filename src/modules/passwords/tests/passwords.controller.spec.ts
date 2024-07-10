@@ -3,7 +3,7 @@ import {
   passwordResult,
   passwordRemovedResult,
   createPasswordDto,
-} from '../../../utils/tests/mocks/data.mocks';
+} from 'src/utils/tests/mocks/data.mocks';
 import { mockRestService } from 'src/utils/tests/mocks/providers.mocks';
 import { PasswordsService } from '../passwords.service';
 import { PasswordsController } from '../passwords.controller';

@@ -4,7 +4,7 @@ import {
   authLoginResult,
   authProfileResult,
   reqAuthProfile,
-} from '../../../utils/tests/mocks/data.mocks';
+} from 'src/utils/tests/mocks/data.mocks';
 import { mockAuthService } from 'src/utils/tests/mocks/providers.mocks';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
