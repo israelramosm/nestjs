@@ -66,3 +66,18 @@ npm run migration:revert
 ```
 
 Make sure the migration table data on postagres have the migration files in the project.
+
+
+# Helpful git commands
+
+Run the following command to remove the file and rewrite the entire history with new commit hashes:
+
+```shell
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch <path-to-file>' --prune-empty --tag-name-filter cat -- --all
+```
+
+After this, you might need to force-push your changes using:
+
+```shell
+git push --force
+```
