@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheck } from '@template/utils/types';
+import type { HealthCheck } from '@template/utils/types';
 import { AppService } from './app.service';
 
 describe('AppService', () => {

@@ -3,9 +3,12 @@
 	"version": "0.0.1",
 	"description": "NestJS API app (template)",
 	"private": true,
+	"exports": {
+		"./*": "./src/*.ts"
+	},
 	"imports": {
-		"#src/*": "./src/*",
-		"#mocks/*": "./src/utils/tests/mocks/*"
+		"#src/*": "./src/*.ts",
+		"#mocks/*": "./src/utils/tests/mocks/*.ts"
 	},
 	"scripts": {
 		"start": "nest start",

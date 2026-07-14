@@ -1,8 +1,8 @@
 {
 	"extends": "../../../tsconfig.base.json",
 	"compilerOptions": {
-		"module": "commonjs",
-		"moduleResolution": "node",
+		"module": "preserve",
+		"moduleResolution": "bundler",
 		"target": "ES2021",
 		"types": ["node", "jest"],
 		"declaration": true,
@@ -10,14 +10,9 @@
 		"esModuleInterop": false,
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": "./",
+		"rootDir": "./",
 		"paths": {
-			"src/*": ["src/*"],
-			"@template/configs-envs/*": ["../../libs/configs/envs/src/*"],
-			"@template/utils/*": ["../../libs/utils/src/*"],
-			"@template/dto/*": ["../../libs/dto/src/*"],
-			"@template/interfaces/*": ["../../libs/interfaces/src/*"],
-			"@template/api-redis/*": ["../../libs/api/redis/src/*"],
-			"@template/kafka/*": ["../../libs/kafka/src/*"]
+			"src/*": ["src/*"]
 		},
 		"outDir": "./dist",
 		"incremental": true,

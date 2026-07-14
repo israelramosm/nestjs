@@ -5,7 +5,8 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./*": "./src/*.ts"
+		"./*": "./src/*.ts",
+		"./certs": "./src/certs/index.ts"
 	},
 	"imports": {
 		"#src/*": "./src/*"

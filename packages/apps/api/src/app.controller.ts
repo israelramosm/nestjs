@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthCheck } from '@template/utils/types';
+import type { HealthCheck } from '@template/utils/types';
 import { AppService } from './app.service';
 import { Public } from './common/decorators/public';
 

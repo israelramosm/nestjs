@@ -4,6 +4,9 @@
 	"description": "[APP_DESCRIPTION]",
 	"private": true,
 	"type": "module",
+	"exports": {
+		"./*": "./src/*.ts"
+	},
 	"imports": {
 		"#src/*": "./src/*",
 		"#mocks/*": "./src/utils/tests/mocks/*"
