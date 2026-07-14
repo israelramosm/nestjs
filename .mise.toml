@@ -1,0 +1,149 @@
+# ===========================================
+# NESTJS MONOREPO TEMPLATE - MISE CONFIG
+# ===========================================
+
+[tools]
+bun = "1.2.23"
+biome = "1.8.3"
+
+[env]
+PROJECT_NAME = "nestjs-monorepo-template"
+PROJECT_ROOT = "{{config_root}}"
+# Directorio con los .env compartidos (lib configs-envs).
+ENV_DIR = "{{config_root}}/packages/libs/configs/envs"
+
+# ===========================================
+# CORRER APPS / LIBS (reemplaza app-runner.ts)
+# ===========================================
+
+[tasks.dev]
+description = "Corre una app en watch (mise run dev <app>)"
+run = "bun run --filter './packages/apps/{{arg(name='app')}}' dev"
+
+[tasks.start]
+description = "Arranca una app (mise run start <app>)"
+run = "bun run --filter './packages/apps/{{arg(name='app')}}' start"
+
+[tasks.test]
+description = "Tests de una app (mise run test <app>)"
+run = "bun run --filter './packages/apps/{{arg(name='app')}}' test"
+
+[tasks.build]
+description = "Build de un paquete (mise run build <app-o-lib>)"
+run = "bun run --filter '{{arg(name='pkg')}}' build"
+
+[tasks.typecheck]
+description = "Typecheck de todos los paquetes"
+run = "bun run --filter '*' typecheck"
+
+# ===========================================
+# GESTION DE .ENV
+# ===========================================
+
+[tasks."env:create"]
+description = "Crear .env desde .env.example"
+run = '''
+echo "Creando .env desde .env.example..."
+cd "$ENV_DIR"
+if [ ! -f .env.example ]; then echo ".env.example no encontrado"; exit 1; fi
+if [ -f .env ]; then echo ".env ya existe (usa env:backup primero)"; exit 1; fi
+cp .env.example .env
+echo ".env creado. Actualiza los valores segun tu entorno."
+'''
+
+[tasks."env:check"]
+description = "Verificar variables faltantes en .env"
+run = '''
+set -e
+cd "$ENV_DIR"
+if [ ! -f .env ]; then echo ".env no existe. Usa: mise run env:create"; exit 1; fi
+if [ ! -f .env.example ]; then echo ".env.example no encontrado"; exit 1; fi
+missing=0
+while IFS= read -r line; do
+  if [[ "$line" =~ ^[A-Z_]+= ]]; then
+    var_name=$(echo "$line" | cut -d'=' -f1)
+    if ! grep -q "^$var_name=" .env; then echo "Falta: $var_name"; missing=$((missing + 1)); fi
+  fi
+done < .env.example
+if [ $missing -eq 0 ]; then echo "Todas las variables estan presentes"; else echo "$missing variables faltantes"; fi
+'''
+
+[tasks."env:backup"]
+description = "Backup del .env actual"
+run = '''
+cd "$ENV_DIR"
+if [ ! -f .env ]; then echo "No existe .env para respaldar"; exit 1; fi
+BACKUP_FILE=".env.backup.$(date +%Y%m%d_%H%M%S)"
+cp .env "$BACKUP_FILE"
+echo "Backup creado: $BACKUP_FILE"
+'''
+
+[tasks."env:restore"]
+description = "Restaurar .env desde el backup mas reciente"
+run = '''
+cd "$ENV_DIR"
+LATEST_BACKUP=$(ls -t .env.backup.* 2>/dev/null | head -1)
+if [ -z "$LATEST_BACKUP" ]; then echo "No hay backups"; exit 1; fi
+cp "$LATEST_BACKUP" .env
+echo ".env restaurado desde: $LATEST_BACKUP"
+'''
+
+[tasks."env:status"]
+description = "Estado de los archivos .env"
+run = '''
+cd "$ENV_DIR"
+echo "Directorio: $ENV_DIR"
+echo ".env existe:         $([ -f .env ] && echo si || echo no)"
+echo ".env.example existe: $([ -f .env.example ] && echo si || echo no)"
+[ -f .env ] && echo "Variables en .env:         $(grep -c '^[A-Z_]*=' .env 2>/dev/null || echo 0)"
+[ -f .env.example ] && echo "Variables en .env.example: $(grep -c '^[A-Z_]*=' .env.example 2>/dev/null || echo 0)"
+'''
+
+[tasks."env:clean"]
+description = "Limpiar backups antiguos (mantener 5 mas recientes)"
+run = '''
+cd "$ENV_DIR"
+TO_DELETE=$(ls -t .env.backup.* 2>/dev/null | tail -n +6)
+if [ -z "$TO_DELETE" ]; then echo "No hay backups antiguos"; exit 0; fi
+echo "$TO_DELETE" | xargs rm -f
+echo "Limpieza completada"
+'''
+
+# ===========================================
+# DESARROLLO Y LIMPIEZA
+# ===========================================
+
+[tasks."dev:clean-modules"]
+description = "Eliminar todos los node_modules"
+run = '''
+find . -name "node_modules" -type d -prune -exec rm -rf {} +
+echo "node_modules eliminados. Ejecuta: bun install"
+'''
+
+[tasks."dev:clean-cache"]
+description = "Limpiar caches (bun, biome, tsbuildinfo)"
+run = '''
+bun pm cache rm 2>/dev/null || true
+find . -name ".bun-cache" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+find . -name "*.tsbuildinfo" -delete 2>/dev/null || true
+echo "Caches limpiados"
+'''
+
+[tasks."dev:clean"]
+description = "Limpieza completa: node_modules + locks + cache"
+run = '''
+find . -name "node_modules" -type d -prune -exec rm -rf {} +
+find . -name "bun.lockb" -delete 2>/dev/null || true
+find . -name "package-lock.json" -delete 2>/dev/null || true
+find . -name ".bun-cache" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+find . -name "*.tsbuildinfo" -delete 2>/dev/null || true
+echo "Limpieza completa terminada"
+'''
+
+[tasks."dev:full-reset"]
+description = "Reset completo: limpieza + reinstalacion"
+run = '''
+mise run dev:clean
+bun install
+echo "Reset completo terminado"
+'''

@@ -1,0 +1,8 @@
+[install]
+exact = true
+
+[install.cache]
+dir = ".bun-cache"
+
+[run]
+env = ".env"

@@ -1,0 +1,19 @@
+{
+	"moduleFileExtensions": ["js", "json", "ts"],
+	"rootDir": "../",
+	"modulePaths": ["<rootDir>"],
+	"moduleNameMapper": {
+		"^@template/configs-envs/(.*)$": "<rootDir>/../../libs/configs/envs/src/$1",
+		"^@template/utils/(.*)$": "<rootDir>/../../libs/utils/src/$1",
+		"^@template/dto/(.*)$": "<rootDir>/../../libs/dto/src/$1",
+		"^#src/(.*)$": "<rootDir>/src/$1",
+		"src/(.*)": "<rootDir>/src/$1",
+		"tests/(.*)": "<rootDir>/e2e/$1"
+	},
+	"testEnvironment": "node",
+	"moduleDirectories": ["node_modules", "src"],
+	"testRegex": ".e2e-spec.ts$",
+	"transform": {
+		"^.+\\.(t|j)s$": "ts-jest"
+	}
+}

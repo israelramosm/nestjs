@@ -1,0 +1,25 @@
+{
+	"name": "@template/[APP_NAME]",
+	"version": "0.0.1",
+	"description": "[APP_DESCRIPTION]",
+	"private": true,
+	"type": "module",
+	"imports": {
+		"#src/*": "./src/*",
+		"#mocks/*": "./src/utils/tests/mocks/*"
+	},
+	"scripts": {
+		"start": "bun src/main.ts",
+		"dev": "bun --watch src/main.ts",
+		"hot": "bun --hot src/main.ts",
+		"build": "tsc -p tsconfig.build.json",
+		"clean": "rm -rf dist *.tsbuildinfo",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@template/configs-envs": "workspace:*",
+		"@template/dto": "workspace:*",
+		"@template/utils": "workspace:*"
+	},
+	"devDependencies": {}
+}

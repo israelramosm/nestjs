@@ -1,0 +1,24 @@
+{
+	"name": "@template/api-redis",
+	"version": "0.0.1",
+	"description": "Modulo NestJS de Redis (ioredis) configurado desde envs",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./*": "./src/*.ts"
+	},
+	"imports": {
+		"#src/*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"clean": "rm -rf dist *.tsbuildinfo",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@nestjs/common": "catalog:",
+		"@nestjs/config": "catalog:",
+		"@template/configs-envs": "workspace:*",
+		"ioredis": "catalog:"
+	}
+}

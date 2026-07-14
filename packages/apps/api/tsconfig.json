@@ -1,0 +1,37 @@
+{
+	"extends": "../../../tsconfig.base.json",
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"target": "ES2021",
+		"types": ["node", "jest"],
+		"declaration": true,
+		"removeComments": true,
+		"esModuleInterop": false,
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": "./",
+		"paths": {
+			"src/*": ["src/*"],
+			"@template/configs-envs/*": ["../../libs/configs/envs/src/*"],
+			"@template/utils/*": ["../../libs/utils/src/*"],
+			"@template/dto/*": ["../../libs/dto/src/*"],
+			"@template/interfaces/*": ["../../libs/interfaces/src/*"],
+			"@template/api-redis/*": ["../../libs/api/redis/src/*"],
+			"@template/kafka/*": ["../../libs/kafka/src/*"]
+		},
+		"outDir": "./dist",
+		"incremental": true,
+		"sourceMap": true,
+		"strict": false,
+		"strictNullChecks": false,
+		"noImplicitAny": false,
+		"strictBindCallApply": false,
+		"noUncheckedIndexedAccess": false,
+		"noImplicitOverride": false,
+		"forceConsistentCasingInFileNames": false,
+		"noFallthroughCasesInSwitch": false,
+		"noEmit": false,
+		"skipLibCheck": true
+	},
+	"include": ["src", "e2e"]
+}

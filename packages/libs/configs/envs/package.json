@@ -1,0 +1,22 @@
+{
+	"name": "@template/configs-envs",
+	"version": "0.0.1",
+	"description": "Environments, esquemas de validacion (Joi), carga de .env y certs",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./*": "./src/*.ts"
+	},
+	"imports": {
+		"#src/*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"clean": "rm -rf dist *.tsbuildinfo",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"dotenv": "catalog:",
+		"joi": "catalog:"
+	}
+}
