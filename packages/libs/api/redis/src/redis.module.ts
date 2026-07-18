@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Redis } from 'ioredis';
-import { REDIS_CLIENT } from './redis.constants';
-import { RedisService } from './redis.service';
+import { REDIS_CLIENT } from '#src/redis.constants';
+import { RedisService } from '#src/redis.service';
 
 /**
  * Modulo global de Redis. Usa `lazyConnect` para NO conectarse en el arranque:

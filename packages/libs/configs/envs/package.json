@@ -5,11 +5,21 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./*": "./src/*.ts",
-		"./certs": "./src/certs/index.ts"
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./certs": {
+			"types": "./src/certs/index.ts",
+			"default": "./src/certs/index.ts"
+		},
+		"./package.json": "./package.json"
 	},
 	"imports": {
-		"#src/*": "./src/*"
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
 	},
 	"scripts": {
 		"build": "tsc -p tsconfig.json",

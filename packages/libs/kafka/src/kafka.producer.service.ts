@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ClientKafka } from '@nestjs/microservices';
 import type { Observable } from 'rxjs';
-import { KAFKA_CLIENT } from './kafka.constants';
+import { KAFKA_CLIENT } from '#src/kafka.constants';
 
 @Injectable()
 export class KafkaProducerService {

@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { KAFKA_CLIENT } from './kafka.constants';
-import { KafkaProducerService } from './kafka.producer.service';
+import { KAFKA_CLIENT } from '#src/kafka.constants';
+import { KafkaProducerService } from '#src/kafka.producer.service';
 
 /**
  * Modulo global de Kafka. Registra un `ClientKafka` (transport de

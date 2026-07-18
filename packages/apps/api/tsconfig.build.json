@@ -5,5 +5,5 @@
 		"rootDir": "./src",
 		"outDir": "./dist"
 	},
-	"exclude": ["node_modules", "e2e", "dist", "**/*spec.ts"]
+	"exclude": ["**/*.spec.ts"]
 }

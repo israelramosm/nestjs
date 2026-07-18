@@ -5,24 +5,21 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./*": "./src/*.ts"
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./package.json": "./package.json"
 	},
 	"imports": {
-		"#src/*": "./src/*",
-		"#mocks/*": "./src/utils/tests/mocks/*"
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
 	},
 	"scripts": {
-		"start": "bun src/main.ts",
-		"dev": "bun --watch src/main.ts",
-		"hot": "bun --hot src/main.ts",
-		"build": "tsc -p tsconfig.build.json",
-		"clean": "rm -rf dist *.tsbuildinfo",
-		"typecheck": "tsc --noEmit"
+		"test": "echo "
 	},
-	"dependencies": {
-		"@template/configs-envs": "workspace:*",
-		"@template/dto": "workspace:*",
-		"@template/utils": "workspace:*"
-	},
+	"dependencies": {},
 	"devDependencies": {}
 }

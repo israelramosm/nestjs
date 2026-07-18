@@ -5,10 +5,17 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./*": "./src/*.ts"
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./package.json": "./package.json"
 	},
 	"imports": {
-		"#src/*": "./src/*"
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
 	},
 	"scripts": {
 		"build": "tsc -p tsconfig.json",

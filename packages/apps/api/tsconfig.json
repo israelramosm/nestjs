@@ -1,32 +1,17 @@
 {
 	"extends": "../../../tsconfig.base.json",
 	"compilerOptions": {
+		"baseUrl": ".",
+		"esModuleInterop": false,
 		"module": "preserve",
 		"moduleResolution": "bundler",
-		"target": "ES2021",
-		"types": ["node", "jest"],
-		"declaration": true,
-		"removeComments": true,
-		"esModuleInterop": false,
-		"allowSyntheticDefaultImports": true,
-		"baseUrl": "./",
-		"rootDir": "./",
+		"noImplicitAny": false,
 		"paths": {
 			"src/*": ["src/*"]
 		},
-		"outDir": "./dist",
-		"incremental": true,
-		"sourceMap": true,
 		"strict": false,
-		"strictNullChecks": false,
-		"noImplicitAny": false,
-		"strictBindCallApply": false,
-		"noUncheckedIndexedAccess": false,
-		"noImplicitOverride": false,
-		"forceConsistentCasingInFileNames": false,
-		"noFallthroughCasesInSwitch": false,
-		"noEmit": false,
-		"skipLibCheck": true
+		"strictNullChecks": false
 	},
-	"include": ["src", "e2e"]
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }
