@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import '@template/configs-envs/load-env';
 import { DataSourceOptions } from 'typeorm';
 
 const pgdbConfig: DataSourceOptions = {

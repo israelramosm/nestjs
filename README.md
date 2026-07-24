@@ -90,7 +90,16 @@ bun install
 
 ## Notas
 
-- La app `api` se mantiene en CommonJS (nest/jest); el runtime de desarrollo
-  puede ejecutarse directo con Bun (`mise run dev api`).
-- Los tests unitarios mockean los repositorios (no requieren base de datos);
-  los e2e sí requieren una base de datos activa.
+- **Runtime Bun**: dev y producción corren directo con Bun (`bun --watch
+  src/main.ts` / `bun src/main.ts`), sin paso de build. `nest build` sigue
+  disponible para generar `dist/`, pero no es necesario para arrancar.
+- **Carga de `.env`**: la app carga el `.env` compartido por sí sola
+  (`@template/configs-envs/load-env`), sin depender de mise ni del cwd. mise
+  sigue siendo útil para fijar versiones y gestionar `.env`, pero es opcional.
+- **HTTPS opcional**: la app arranca en HTTP por defecto. Si existen
+  `key.pem`/`cert.pem` en `configs-envs/src/certs/` levanta en HTTPS; puedes
+  forzar HTTP con `HTTPS_ENABLED=false`.
+- **Entidades TypeORM**: las relaciones usan el tipo `Relation<>` de TypeORM
+  para evitar el TDZ por dependencias circulares bajo ESM/Bun.
+- Los tests unitarios (Jest) mockean los repositorios (no requieren base de
+  datos); los e2e sí requieren una base de datos activa.

@@ -8,6 +8,7 @@ import {
 	JoinColumn,
 	OneToOne,
 	PrimaryGeneratedColumn,
+	type Relation,
 	UpdateDateColumn,
 } from 'typeorm';
 
@@ -24,14 +25,14 @@ export class User {
 		(password) => password.user,
 	) // specify inverse side as a second parameter)
 	@JoinColumn()
-	password: Password;
+	password: Relation<Password>;
 
 	@OneToOne(
 		() => Profile,
 		(profile) => profile.user,
 	) // specify inverse side as a second parameter
 	@JoinColumn()
-	profile: Profile;
+	profile: Relation<Profile>;
 
 	@CreateDateColumn()
 	created_at: Date; // Creation date

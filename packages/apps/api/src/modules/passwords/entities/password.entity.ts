@@ -6,6 +6,7 @@ import {
 	Entity,
 	OneToOne,
 	PrimaryGeneratedColumn,
+	type Relation,
 	UpdateDateColumn,
 } from 'typeorm';
 
@@ -21,7 +22,7 @@ export class Password {
 		() => User,
 		(user) => user.password,
 	) // specify inverse side as a second parameter
-	user: User;
+	user: Relation<User>;
 
 	@CreateDateColumn()
 	created_at: Date; // Creation date
