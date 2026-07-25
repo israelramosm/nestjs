@@ -1,5 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { mockRestService } from '@template/utils/tests/mocks/providers.mocks';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { createMockRestService } from '@template/utils/tests/mocks/providers.mocks';
 import {
 	createProfileDto,
 	profileRemovedResult,
@@ -10,19 +11,17 @@ import { ProfilesService } from '../profiles.service';
 
 describe('ProfileController', () => {
 	let profileController: ProfileController;
+	let profilesService: ReturnType<typeof createMockRestService>;
 
 	beforeEach(async () => {
+		profilesService = createMockRestService();
+
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [ProfileController],
-			providers: [
-				{
-					provide: ProfilesService,
-					useValue: mockRestService,
-				},
-			],
+			providers: [{ provide: ProfilesService, useValue: profilesService }],
 		}).compile();
 
-		profileController = module.get<ProfileController>(ProfileController);
+		profileController = module.get(ProfileController);
 	});
 
 	it('should be defined', () => {
@@ -30,80 +29,54 @@ describe('ProfileController', () => {
 	});
 
 	it('create => Should create a new profile and return its data', async () => {
-		// arrange
-		jest.spyOn(mockRestService, 'create').mockResolvedValue(profileResult);
+		profilesService.create.mockResolvedValue(profileResult);
 
-		// act
 		const result = await profileController.create(createProfileDto);
 
-		// assert
-		expect(mockRestService.create).toHaveBeenCalled();
-		expect(mockRestService.create).toHaveBeenCalledWith(createProfileDto);
-
+		expect(profilesService.create).toHaveBeenCalledWith(createProfileDto);
 		expect(result).toStrictEqual(profileResult);
 	});
 
 	it('findAll => should return an array of profile', async () => {
-		//arrange
 		const profiles = [profileResult];
-		jest.spyOn(mockRestService, 'findAll').mockResolvedValue(profiles);
+		profilesService.findAll.mockResolvedValue(profiles);
 
-		//act
 		const result = await profileController.findAll();
 
-		// assert
-		expect(mockRestService.findAll).toHaveBeenCalled();
-
+		expect(profilesService.findAll).toHaveBeenCalled();
 		expect(result).toEqual(profiles);
 	});
 
 	it('findOneById => should find a profile by a given id and return its data', async () => {
-		//arrange
 		const id = profileResult.profile_id;
+		profilesService.findOneById.mockResolvedValue(profileResult);
 
-		jest.spyOn(mockRestService, 'findOneById').mockResolvedValue(profileResult);
-
-		//act
 		const result = await profileController.findOneById(id);
 
-		// assert
-		expect(mockRestService.findOneById).toHaveBeenCalled();
-		expect(mockRestService.findOneById).toHaveBeenCalledWith(id);
-
+		expect(profilesService.findOneById).toHaveBeenCalledWith(id);
 		expect(result).toEqual(profileResult);
 	});
 
-	it('update => Should update a new profile and return its data', async () => {
-		// arrange
+	it('update => Should update a profile and return its data', async () => {
 		const id = profileResult.profile_id;
-		jest.spyOn(mockRestService, 'update').mockResolvedValue(profileResult);
+		profilesService.update.mockResolvedValue(profileResult);
 
-		// act
 		const result = await profileController.update(id, createProfileDto);
 
-		// assert
-		expect(mockRestService.update).toHaveBeenCalled();
-		expect(mockRestService.update).toHaveBeenCalledWith(id, createProfileDto);
-
+		expect(profilesService.update).toHaveBeenCalledWith(id, createProfileDto);
 		expect(result).toStrictEqual(profileResult);
 	});
 
-	it('remove => should find a profile by a given id, remove and then return Number of affected rows', async () => {
-		//arrange
+	it('remove => should remove a profile by id and return the number of affected rows', async () => {
 		const id = profileResult.profile_id;
+		profilesService.remove.mockResolvedValue(profileRemovedResult);
 
-		jest.spyOn(mockRestService, 'remove').mockResolvedValue(profileRemovedResult);
-
-		//act
 		const result = await profileController.remove(id);
 
-		// assert
-		expect(mockRestService.remove).toHaveBeenCalled();
-		expect(mockRestService.remove).toHaveBeenCalledWith(id);
-
+		expect(profilesService.remove).toHaveBeenCalledWith(id);
 		expect(result).toEqual(profileRemovedResult);
 	});
 
 	// TODO: Need to work on controller and api for this implementation
-	xit('findOneByEmail => should find a profile by a given email and return its data', () => {});
+	it.skip('findOneByEmail => should find a profile by a given email and return its data', () => {});
 });

@@ -1,7 +1,11 @@
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { mockJWTService, mockUserRestService } from '@template/utils/tests/mocks/providers.mocks';
+import { Test, type TestingModule } from '@nestjs/testing';
+import {
+	createMockJWTService,
+	createMockUserRestService,
+} from '@template/utils/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/modules/users/users.service';
 import {
@@ -14,23 +18,26 @@ import { AuthService } from '../auth.service';
 
 describe('AuthService', () => {
 	let authService: AuthService;
+	let usersService: ReturnType<typeof createMockUserRestService>;
+	let jwtService: ReturnType<typeof createMockJWTService>;
 
 	beforeEach(async () => {
+		usersService = createMockUserRestService();
+		jwtService = createMockJWTService();
+
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				AuthService,
-				{
-					provide: UsersService,
-					useValue: mockUserRestService,
-				},
-				{
-					provide: JwtService,
-					useValue: mockJWTService,
-				},
+				{ provide: UsersService, useValue: usersService },
+				{ provide: JwtService, useValue: jwtService },
 			],
 		}).compile();
 
-		authService = module.get<AuthService>(AuthService);
+		authService = module.get(AuthService);
+	});
+
+	afterEach(() => {
+		mock.restore();
 	});
 
 	it('should be defined', () => {
@@ -38,68 +45,47 @@ describe('AuthService', () => {
 	});
 
 	it('validateUser => Should validate and return user information', async () => {
-		// arrange
-		jest.spyOn(mockUserRestService, 'findOneByEmail').mockResolvedValue(userResult);
-		jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+		usersService.findOneByEmail.mockResolvedValue(userResult);
+		spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
-		// act
 		const result = await authService.validateUser(authLoginDto.email, authLoginDto.password);
 
-		// assert
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { password, ...userResultMock } = userResult;
 
-		expect(mockUserRestService.findOneByEmail).toHaveBeenCalled();
-		expect(mockUserRestService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
-
+		expect(usersService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
 		expect(result).toStrictEqual(userResultMock);
 	});
 
 	it('login => should return an access token', async () => {
-		//arrange
-		jest.spyOn(mockJWTService, 'sign').mockReturnValue(authLoginResult.access_token);
+		usersService.findOneByEmail.mockResolvedValue(userResult);
+		spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+		jwtService.sign.mockReturnValue(authLoginResult.access_token);
 
-		//act
 		const result = await authService.login(authLoginDto);
 
-		// assert
-		expect(mockJWTService.sign).toHaveBeenCalled();
-		expect(mockJWTService.sign).toHaveBeenCalledWith(jwtPayload);
-
+		expect(jwtService.sign).toHaveBeenCalledWith(jwtPayload);
 		expect(result).toEqual(authLoginResult);
 	});
 
 	describe('Error', () => {
-		it('NotFound => Should validate and return error if the user is not found', async () => {
-			// arrange
-			jest.spyOn(mockUserRestService, 'findOneByEmail').mockResolvedValue(null);
-			jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+		it('NotFound => Should throw if the user is not found', async () => {
+			usersService.findOneByEmail.mockResolvedValue(null);
+			spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
-			// act
 			const result = authService.validateUser(authLoginDto.email, authLoginDto.password);
-
-			// assert
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			expect(mockUserRestService.findOneByEmail).toHaveBeenCalled();
-			expect(mockUserRestService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
 
 			await expect(result).rejects.toEqual(new UnauthorizedException('User not found'));
+			expect(usersService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
 		});
 
-		it('IncorrectPassword => Should validate and return error the password is incorrect', async () => {
-			// arrange
-			jest.spyOn(mockUserRestService, 'findOneByEmail').mockResolvedValue(userResult);
-			jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
+		it('IncorrectPassword => Should throw if the password is incorrect', async () => {
+			usersService.findOneByEmail.mockResolvedValue(userResult);
+			spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
 
-			// act
 			const result = authService.validateUser(authLoginDto.email, authLoginDto.password);
 
-			// assert
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			expect(mockUserRestService.findOneByEmail).toHaveBeenCalled();
-			expect(mockUserRestService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
-
 			await expect(result).rejects.toEqual(new UnauthorizedException('Incorrect password'));
+			expect(usersService.findOneByEmail).toHaveBeenCalledWith(authLoginDto.email);
 		});
 	});
 });

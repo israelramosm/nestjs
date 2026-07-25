@@ -1,37 +1,45 @@
-export const mockRepository = {
-	save: jest.fn(),
-	find: jest.fn(),
-	findOne: jest.fn(),
-	update: jest.fn(),
-	delete: jest.fn(),
-};
+import { mock } from 'bun:test';
 
-export const mockRestService = {
-	create: jest.fn(),
-	findAll: jest.fn(),
-	findOneById: jest.fn(),
-	update: jest.fn(),
-	remove: jest.fn(),
-};
+/**
+ * Cada helper devuelve mocks nuevos por invocacion para que cada test tenga su
+ * propio estado aislado. Asi `bun test` puede correr todos los archivos en un
+ * unico proceso sin que las llamadas se filtren entre suites.
+ */
 
-export const mockAuthService = {
-	validateUser: jest.fn(),
-	login: jest.fn(),
-};
-
-export const mockRestServiceData = (resolvedValue: unknown) => ({
-	create: jest.fn().mockResolvedValue(resolvedValue),
-	findAll: jest.fn().mockResolvedValue([resolvedValue]),
-	findOneById: jest.fn().mockResolvedValue(resolvedValue),
-	update: jest.fn().mockResolvedValue(resolvedValue),
-	remove: jest.fn().mockResolvedValue(resolvedValue),
+export const createMockRepository = () => ({
+	save: mock(),
+	find: mock(),
+	findOne: mock(),
+	update: mock(),
+	delete: mock(),
 });
 
-export const mockUserRestService = {
-	...mockRestService,
-	findOneByEmail: jest.fn(),
-};
+export const createMockRestService = () => ({
+	create: mock(),
+	findAll: mock(),
+	findOneById: mock(),
+	update: mock(),
+	remove: mock(),
+});
 
-export const mockJWTService = {
-	sign: jest.fn(),
-};
+export const createMockAuthService = () => ({
+	validateUser: mock(),
+	login: mock(),
+});
+
+export const createMockRestServiceData = (resolvedValue: unknown) => ({
+	create: mock().mockResolvedValue(resolvedValue),
+	findAll: mock().mockResolvedValue([resolvedValue]),
+	findOneById: mock().mockResolvedValue(resolvedValue),
+	update: mock().mockResolvedValue(resolvedValue),
+	remove: mock().mockResolvedValue(resolvedValue),
+});
+
+export const createMockUserRestService = () => ({
+	...createMockRestService(),
+	findOneByEmail: mock(),
+});
+
+export const createMockJWTService = () => ({
+	sign: mock(),
+});

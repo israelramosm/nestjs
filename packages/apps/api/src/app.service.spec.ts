@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, type TestingModule } from '@nestjs/testing';
 import type { HealthCheck } from '@template/utils/types';
 import { AppService } from './app.service';
 
@@ -10,22 +11,19 @@ describe('AppService', () => {
 			providers: [AppService],
 		}).compile();
 
-		appService = module.get<AppService>(AppService);
+		appService = module.get(AppService);
 	});
 
 	it('should be defined', () => {
 		expect(appService).toBeDefined();
 	});
 
-	it('should return Healt check object', () => {
-		// arrange
+	it('should return health check object', () => {
 		const healthCheck: HealthCheck = {
 			ok: true,
 			message: 'App is running ...',
 		};
 
-		const result = appService.getHealthCheck();
-
-		expect(result).toEqual(healthCheck);
+		expect(appService.getHealthCheck()).toEqual(healthCheck);
 	});
 });

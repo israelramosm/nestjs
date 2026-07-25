@@ -1,24 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { mockUserRestService } from '@template/utils/tests/mocks/providers.mocks';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { createMockUserRestService } from '@template/utils/tests/mocks/providers.mocks';
 import { createUserDto, userRemovedResult, userResult } from 'src/utils/tests/mocks/data.mocks';
 import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 
 describe('UsersController', () => {
 	let userController: UsersController;
+	let usersService: ReturnType<typeof createMockUserRestService>;
 
 	beforeEach(async () => {
+		usersService = createMockUserRestService();
+
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [UsersController],
-			providers: [
-				{
-					provide: UsersService,
-					useValue: mockUserRestService,
-				},
-			],
+			providers: [{ provide: UsersService, useValue: usersService }],
 		}).compile();
 
-		userController = module.get<UsersController>(UsersController);
+		userController = module.get(UsersController);
 	});
 
 	it('should be defined', () => {
@@ -26,80 +25,54 @@ describe('UsersController', () => {
 	});
 
 	it('create => Should create a new user and return its data', async () => {
-		// arrange
-		jest.spyOn(mockUserRestService, 'create').mockResolvedValue(userResult);
+		usersService.create.mockResolvedValue(userResult);
 
-		// act
 		const result = await userController.create(createUserDto);
 
-		// assert
-		expect(mockUserRestService.create).toHaveBeenCalled();
-		expect(mockUserRestService.create).toHaveBeenCalledWith(createUserDto);
-
+		expect(usersService.create).toHaveBeenCalledWith(createUserDto);
 		expect(result).toStrictEqual(userResult);
 	});
 
 	it('findAll => should return an array of user', async () => {
-		//arrange
 		const users = [userResult];
-		jest.spyOn(mockUserRestService, 'findAll').mockResolvedValue(users);
+		usersService.findAll.mockResolvedValue(users);
 
-		//act
 		const result = await userController.findAll();
 
-		// assert
-		expect(mockUserRestService.findAll).toHaveBeenCalled();
-
+		expect(usersService.findAll).toHaveBeenCalled();
 		expect(result).toEqual(users);
 	});
 
 	it('findOneById => should find a user by a given id and return its data', async () => {
-		//arrange
 		const id = userResult.user_id;
+		usersService.findOneById.mockResolvedValue(userResult);
 
-		jest.spyOn(mockUserRestService, 'findOneById').mockResolvedValue(userResult);
-
-		//act
 		const result = await userController.findOneById(id);
 
-		// assert
-		expect(mockUserRestService.findOneById).toHaveBeenCalled();
-		expect(mockUserRestService.findOneById).toHaveBeenCalledWith(id);
-
+		expect(usersService.findOneById).toHaveBeenCalledWith(id);
 		expect(result).toEqual(userResult);
 	});
 
-	it('update => Should update a new user and return its data', async () => {
-		// arrange
+	it('update => Should update a user and return its data', async () => {
 		const id = userResult.user_id;
-		jest.spyOn(mockUserRestService, 'update').mockResolvedValue(userResult);
+		usersService.update.mockResolvedValue(userResult);
 
-		// act
 		const result = await userController.update(id, createUserDto);
 
-		// assert
-		expect(mockUserRestService.update).toHaveBeenCalled();
-		expect(mockUserRestService.update).toHaveBeenCalledWith(id, createUserDto);
-
+		expect(usersService.update).toHaveBeenCalledWith(id, createUserDto);
 		expect(result).toStrictEqual(userResult);
 	});
 
-	it('remove => should find a user by a given id, remove and then return Number of affected rows', async () => {
-		//arrange
+	it('remove => should remove a user by id and return the number of affected rows', async () => {
 		const id = userResult.user_id;
+		usersService.remove.mockResolvedValue(userRemovedResult);
 
-		jest.spyOn(mockUserRestService, 'remove').mockResolvedValue(userRemovedResult);
-
-		//act
 		const result = await userController.remove(id);
 
-		// assert
-		expect(mockUserRestService.remove).toHaveBeenCalled();
-		expect(mockUserRestService.remove).toHaveBeenCalledWith(id);
-
+		expect(usersService.remove).toHaveBeenCalledWith(id);
 		expect(result).toEqual(userRemovedResult);
 	});
 
 	// TODO: Need to work on controller and api for this implementation
-	xit('findOneByEmail => should find a user by a given email and return its data', () => {});
+	it.skip('findOneByEmail => should find a user by a given email and return its data', () => {});
 });

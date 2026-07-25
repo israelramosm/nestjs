@@ -1,14 +1,17 @@
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { mockRepository, mockRestServiceData } from '@template/utils/tests/mocks/providers.mocks';
+import {
+	createMockRepository,
+	createMockRestServiceData,
+} from '@template/utils/tests/mocks/providers.mocks';
 import { PasswordsService } from 'src/modules/passwords/passwords.service';
 import { ProfilesService } from 'src/modules/profiles/profiles.service';
 import {
 	createUserDto,
 	passwordResult,
 	profileResult,
-	userCallWith,
 	userResult,
 } from 'src/utils/tests/mocks/data.mocks';
 import { User } from '../entities/user.entity';
@@ -17,27 +20,21 @@ import { UsersService } from '../users.service';
 
 describe('UsersService', () => {
 	let userService: UsersService;
+	let repository: ReturnType<typeof createMockRepository>;
 
 	beforeEach(async () => {
+		repository = createMockRepository();
+
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				UsersService,
-				{
-					provide: getRepositoryToken(User),
-					useValue: mockRepository,
-				},
-				{
-					provide: ProfilesService,
-					useValue: mockRestServiceData(profileResult),
-				},
-				{
-					provide: PasswordsService,
-					useValue: mockRestServiceData(passwordResult),
-				},
+				{ provide: getRepositoryToken(User), useValue: repository },
+				{ provide: ProfilesService, useValue: createMockRestServiceData(profileResult) },
+				{ provide: PasswordsService, useValue: createMockRestServiceData(passwordResult) },
 			],
 		}).compile();
 
-		userService = module.get<UsersService>(UsersService);
+		userService = module.get(UsersService);
 	});
 
 	it('should be defined', () => {
@@ -45,113 +42,99 @@ describe('UsersService', () => {
 	});
 
 	it('create => Should create a new user and return its data', async () => {
-		// arrange
-		jest.spyOn(mockRepository, 'save').mockReturnValue(userResult);
+		repository.save.mockResolvedValue(userResult);
 
-		// act
 		const result = await userService.create(createUserDto);
 
-		// assert
-		expect(mockRepository.save).toHaveBeenCalled();
-		expect(mockRepository.save).toHaveBeenCalledWith(userCallWith);
-
+		expect(repository.save).toHaveBeenCalledWith(
+			expect.objectContaining({
+				first_name: createUserDto.firstname,
+				last_name: createUserDto.lastname,
+				email: createUserDto.email,
+				password: passwordResult,
+				profile: profileResult,
+			}),
+		);
 		expect(result).toStrictEqual(userResult);
 	});
 
 	it('findAll => should return an array of user', async () => {
-		//arrange
 		const users = [userResult];
-		jest.spyOn(mockRepository, 'find').mockReturnValue(users);
+		repository.find.mockResolvedValue(users);
 
-		//act
 		const result = await userService.findAll();
 
-		// assert
-		expect(mockRepository.find).toHaveBeenCalled();
-
+		expect(repository.find).toHaveBeenCalled();
 		expect(result).toEqual(users);
 	});
 
 	it('findOneById => should find a user by a given id and return its data', async () => {
-		//arrange
 		const id = userResult.user_id;
+		repository.findOne.mockResolvedValue(userResult);
 
-		jest.spyOn(mockRepository, 'findOne').mockReturnValue(userResult);
-
-		//act
 		const result = await userService.findOneById(id);
 
-		// assert
-		expect(mockRepository.findOne).toHaveBeenCalled();
-		expect(mockRepository.findOne).toHaveBeenCalledWith(findUserByUserIdQuery(id));
-
+		expect(repository.findOne).toHaveBeenCalledWith(findUserByUserIdQuery(id));
 		expect(result).toEqual(userResult);
 	});
 
-	it('findOneByUsername => should find a user by a given username and return its data', async () => {
-		//arrange
+	it('findOneByEmail => should find a user by a given email and return its data', async () => {
 		const email = userResult.email;
+		repository.findOne.mockResolvedValue(userResult);
 
-		jest.spyOn(mockRepository, 'findOne').mockReturnValue(userResult);
-
-		//act
 		const result = await userService.findOneByEmail(email);
 
-		// assert
-		expect(mockRepository.findOne).toHaveBeenCalled();
-		expect(mockRepository.findOne).toHaveBeenCalledWith(findUserByEmailQuery(email));
-
+		expect(repository.findOne).toHaveBeenCalledWith(findUserByEmailQuery(email));
 		expect(result).toEqual(userResult);
 	});
 
-	it('update => Should update a new user and return its data', async () => {
-		// arrange
+	it('update => Should update a user and return its data', async () => {
 		const id = userResult.user_id;
-		jest.spyOn(mockRepository, 'save').mockReturnValue(userResult);
+		repository.save.mockResolvedValue(userResult);
 
-		// act
 		const result = await userService.update(id, createUserDto);
 
-		// assert
-		expect(mockRepository.save).toHaveBeenCalled();
-		expect(mockRepository.save).toHaveBeenCalledWith(userCallWith);
-
+		expect(repository.save).toHaveBeenCalledWith(
+			expect.objectContaining({
+				user_id: id,
+				first_name: createUserDto.firstname,
+				last_name: createUserDto.lastname,
+				email: createUserDto.email,
+			}),
+		);
 		expect(result).toStrictEqual(userResult);
 	});
 
-	it('remove => should find a user by a given id, remove and then return Number of affected rows', async () => {
-		//arrange
+	it('remove => should remove a user by id and return the number of affected rows', async () => {
 		const id = userResult.user_id;
+		repository.findOne.mockResolvedValue(userResult);
+		repository.delete.mockResolvedValue(userResult);
 
-		jest.spyOn(mockRepository, 'delete').mockReturnValue(userResult);
-
-		//act
 		const result = await userService.remove(id);
 
-		// assert
-		expect(mockRepository.delete).toHaveBeenCalled();
-		expect(mockRepository.delete).toHaveBeenCalledWith(id);
-
-		expect(result).toEqual(userResult);
+		expect(repository.delete).toHaveBeenCalledWith(userResult.user_id);
+		expect(result).toEqual(
+			expect.objectContaining({
+				user_id: userResult.user_id,
+				email: userResult.email,
+				first_name: userResult.first_name,
+				last_name: userResult.last_name,
+				profile: profileResult,
+				password: passwordResult,
+			}),
+		);
 	});
 
 	describe('Error', () => {
-		it('create => Should return a HttpException if user email exist', async () => {
-			// arrange
-			jest.spyOn(mockRepository, 'findOne').mockResolvedValue(userResult);
+		it('create => Should throw a HttpException if the user email already exists', async () => {
+			repository.findOne.mockResolvedValue(userResult);
 
-			// act
 			const result = userService.create(createUserDto);
-
-			// assert
-			expect(mockRepository.findOne).toHaveBeenCalled();
-			expect(mockRepository.findOne).toHaveBeenCalledWith(
-				findUserByEmailQuery(createUserDto.email),
-			);
 
 			await expect(result).rejects.toEqual(
 				new HttpException('User email already exist', HttpStatus.CONFLICT),
 			);
+			expect(repository.findOne).toHaveBeenCalledWith(findUserByEmailQuery(createUserDto.email));
 		});
 	});
 });

@@ -1,6 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { mockRepository } from '@template/utils/tests/mocks/providers.mocks';
+import { createMockRepository } from '@template/utils/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
 import { createPasswordDto, passwordResult } from 'src/utils/tests/mocks/data.mocks';
 import { Password } from '../entities/password.entity';
@@ -9,100 +10,81 @@ import { findPasswordByPasswordIdQuery } from '../queries/password.queries';
 
 describe('PasswordsService', () => {
 	let passwordsService: PasswordsService;
+	let repository: ReturnType<typeof createMockRepository>;
 
 	beforeEach(async () => {
+		repository = createMockRepository();
+
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				PasswordsService,
-				{
-					provide: getRepositoryToken(Password),
-					useValue: mockRepository,
-				},
+				{ provide: getRepositoryToken(Password), useValue: repository },
 			],
 		}).compile();
 
-		passwordsService = module.get<PasswordsService>(PasswordsService);
+		passwordsService = module.get(PasswordsService);
+	});
+
+	afterEach(() => {
+		mock.restore();
 	});
 
 	it('should be defined', () => {
 		expect(passwordsService).toBeDefined();
 	});
 
-	it('create => Should create a new profile and return its data', async () => {
-		// arrange
-		jest.spyOn(mockRepository, 'save').mockReturnValue(passwordResult);
-		jest.spyOn(bcrypt, 'hash').mockReturnValue(createPasswordDto.password as never);
+	it('create => Should create a new password and return its data', async () => {
+		repository.save.mockResolvedValue(passwordResult);
+		spyOn(bcrypt, 'hash').mockResolvedValue(createPasswordDto.password as never);
 
-		// act
 		const result = await passwordsService.create(createPasswordDto);
 
-		// assert
-
-		expect(mockRepository.save).toHaveBeenCalled();
-		expect(mockRepository.save).toHaveBeenCalledWith(createPasswordDto);
-
+		expect(repository.save).toHaveBeenCalledWith(
+			expect.objectContaining({ password: createPasswordDto.password }),
+		);
 		expect(result).toStrictEqual(passwordResult);
 	});
 
-	it('findAll => should return an array of profile', async () => {
-		//arrange
-		const profiles = [passwordResult];
-		jest.spyOn(mockRepository, 'find').mockReturnValue(profiles);
+	it('findAll => should return an array of password', async () => {
+		const passwords = [passwordResult];
+		repository.find.mockResolvedValue(passwords);
 
-		//act
 		const result = await passwordsService.findAll();
 
-		// assert
-		expect(mockRepository.find).toHaveBeenCalled();
-
-		expect(result).toEqual(profiles);
+		expect(repository.find).toHaveBeenCalled();
+		expect(result).toEqual(passwords);
 	});
 
-	it('findOneById => should find a profile by a given id and return its data', async () => {
-		//arrange
+	it('findOneById => should find a password by a given id and return its data', async () => {
 		const id = passwordResult.password_id;
+		repository.findOne.mockResolvedValue(passwordResult);
 
-		jest.spyOn(mockRepository, 'findOne').mockReturnValue(passwordResult);
-
-		//act
 		const result = await passwordsService.findOneById(id);
 
-		// assert
-		expect(mockRepository.findOne).toHaveBeenCalled();
-		expect(mockRepository.findOne).toHaveBeenCalledWith(findPasswordByPasswordIdQuery(id));
-
+		expect(repository.findOne).toHaveBeenCalledWith(findPasswordByPasswordIdQuery(id));
 		expect(result).toEqual(passwordResult);
 	});
 
-	it('uptade => Should update a new profile and return its data', async () => {
-		// arrange
-		const password_id = passwordResult.password_id;
-		jest.spyOn(mockRepository, 'save').mockReturnValue(passwordResult);
-		jest.spyOn(bcrypt, 'hash').mockReturnValue(createPasswordDto.password as never);
+	it('update => Should update a password and return its data', async () => {
+		const passwordId = passwordResult.password_id;
+		repository.save.mockResolvedValue(passwordResult);
 
-		// act
-		const result = await passwordsService.update(password_id, createPasswordDto);
+		const result = await passwordsService.update(passwordId, createPasswordDto);
 
-		// assert
-		expect(mockRepository.save).toHaveBeenCalled();
-		expect(mockRepository.save).toHaveBeenCalledWith(createPasswordDto);
-
+		expect(repository.save).toHaveBeenCalledWith(
+			expect.objectContaining({ password_id: passwordId, password: createPasswordDto.password }),
+		);
 		expect(result).toStrictEqual(passwordResult);
 	});
 
-	it('remove => should find a profile by a given id, remove and then return Number of affected rows', async () => {
-		//arrange
+	it('remove => should remove a password by id and return the number of affected rows', async () => {
 		const id = passwordResult.password_id;
+		repository.findOne.mockResolvedValue(passwordResult);
+		repository.delete.mockResolvedValue(passwordResult);
 
-		jest.spyOn(mockRepository, 'delete').mockReturnValue(passwordResult);
-
-		//act
 		const result = await passwordsService.remove(id);
 
-		// assert
-		expect(mockRepository.delete).toHaveBeenCalled();
-		expect(mockRepository.delete).toHaveBeenCalledWith(id);
-
-		expect(result).toEqual(passwordResult);
+		expect(repository.delete).toHaveBeenCalledWith(id);
+		expect(result).toEqual(expect.objectContaining({ password_id: id }));
 	});
 });

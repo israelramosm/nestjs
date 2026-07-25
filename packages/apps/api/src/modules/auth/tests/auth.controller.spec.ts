@@ -1,5 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { mockAuthService } from '@template/utils/tests/mocks/providers.mocks';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { createMockAuthService } from '@template/utils/tests/mocks/providers.mocks';
 import {
 	authLoginDto,
 	authLoginResult,
@@ -11,44 +12,35 @@ import { AuthService } from '../auth.service';
 
 describe('AuthController', () => {
 	let authController: AuthController;
+	let authService: ReturnType<typeof createMockAuthService>;
 
 	beforeEach(async () => {
+		authService = createMockAuthService();
+
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [AuthController],
-			providers: [
-				{
-					provide: AuthService,
-					useValue: mockAuthService,
-				},
-			],
+			providers: [{ provide: AuthService, useValue: authService }],
 		}).compile();
 
-		authController = module.get<AuthController>(AuthController);
+		authController = module.get(AuthController);
 	});
 
 	it('should be defined', () => {
 		expect(authController).toBeDefined();
 	});
 
-	it('login => Should login a new user and return its data', async () => {
-		// arrange
-		jest.spyOn(mockAuthService, 'login').mockResolvedValue(authLoginResult);
+	it('login => Should login a user and return its data', async () => {
+		authService.login.mockResolvedValue(authLoginResult);
 
-		// act
 		const result = await authController.login(authLoginDto);
 
-		// assert
-		expect(mockAuthService.login).toHaveBeenCalled();
-		expect(mockAuthService.login).toHaveBeenCalledWith(authLoginDto);
-
+		expect(authService.login).toHaveBeenCalledWith(authLoginDto);
 		expect(result).toStrictEqual(authLoginResult);
 	});
 
 	it('getProfile => Should return user from request', async () => {
-		//act
 		const result = await authController.getProfile(reqAuthProfile);
 
-		// assert
 		expect(result).toEqual(authProfileResult);
 	});
 });

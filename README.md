@@ -12,7 +12,7 @@ listo para crecer con nuevas apps y libs.
 - **mise** para fijar versiones de herramientas y gestionar `.env`.
 - **husky** para hooks de git (`biome check` en pre-commit).
 - **TypeORM** (Postgres por defecto, MySQL bajo profile).
-- **Jest** para tests unitarios y e2e de la app `api`.
+- **`bun test`** para tests unitarios y e2e de la app `api`.
 - **docker-compose** para infra local (postgres, mysql, redis, kafka).
 
 ## Estructura
@@ -101,5 +101,9 @@ bun install
   forzar HTTP con `HTTPS_ENABLED=false`.
 - **Entidades TypeORM**: las relaciones usan el tipo `Relation<>` de TypeORM
   para evitar el TDZ por dependencias circulares bajo ESM/Bun.
-- Los tests unitarios (Jest) mockean los repositorios (no requieren base de
-  datos); los e2e sí requieren una base de datos activa.
+- **Tests con `bun test`**: `bun run --filter '@template/api' test` (unit) y
+  `test:e2e` (requiere DB). Cada archivo de test corre en su propio proceso
+  (`scripts/run-tests.ts`) para replicar el aislamiento por-archivo que daba
+  Jest — los specs comparten mocks singleton de `@template/utils`. Los tests
+  unitarios mockean los repositorios (no requieren base de datos); los e2e sí
+  requieren una base de datos activa.

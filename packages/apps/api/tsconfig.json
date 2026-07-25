@@ -12,6 +12,6 @@
 		"strict": false,
 		"strictNullChecks": false
 	},
-	"include": ["src"],
+	"include": ["src", "e2e"],
 	"exclude": ["node_modules"]
 }

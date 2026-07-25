@@ -23,6 +23,6 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@types/jest": "catalog:"
+		"@types/bun": "catalog:"
 	}
 }
