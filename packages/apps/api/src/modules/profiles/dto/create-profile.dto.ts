@@ -13,7 +13,7 @@ export class CreateProfileDto {
 	@IsAlphanumeric(undefined, {
 		message: 'Username does not allow other than alpha numeric chars.',
 	})
-	username: string;
+	username!: string;
 
 	@IsString()
 	photo_url?: string;

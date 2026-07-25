@@ -3,8 +3,8 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMockRepository } from '@template/utils/tests/mocks/providers.mocks';
-import { ProfilesService } from 'src/modules/profiles/profiles.service';
-import { createProfileDto, profileResult } from 'src/utils/tests/mocks/data.mocks';
+import { ProfilesService } from '#src/modules/profiles/profiles.service';
+import { createProfileDto, profileResult } from '#src/utils/tests/mocks/data.mocks';
 import { Profile } from '../entities/profile.entity';
 import {
 	findProfileByProfileIdQuery,

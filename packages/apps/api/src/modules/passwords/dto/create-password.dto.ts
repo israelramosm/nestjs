@@ -1,5 +1,5 @@
 import { IsNotEmpty, Matches } from 'class-validator';
-import { PASSWORD_REGEX } from 'src/common/constants';
+import { PASSWORD_REGEX } from '#src/common/constants';
 
 export class CreatePasswordDto {
 	@IsNotEmpty()
@@ -10,5 +10,5 @@ export class CreatePasswordDto {
         one number and 
         one special character`,
 	})
-	password: string;
+	password!: string;
 }

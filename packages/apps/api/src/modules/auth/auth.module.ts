@@ -22,9 +22,9 @@ import { LocalStrategy } from './strategies/local.strategy';
 			imports: [ConfigModule],
 			useFactory: async (configService: ConfigService) => ({
 				global: true,
-				secret: configService.get<string>(Environments.JWT_SECRET),
+				secret: configService.getOrThrow<string>(Environments.JWT_SECRET),
 				signOptions: {
-					expiresIn: `${configService.get<string>(Environments.JWT_EXPIRATION)}s`,
+					expiresIn: configService.getOrThrow<number>(Environments.JWT_EXPIRATION),
 				},
 			}),
 			inject: [ConfigService],

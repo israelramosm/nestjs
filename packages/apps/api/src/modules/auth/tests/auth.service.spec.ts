@@ -7,13 +7,13 @@ import {
 	createMockUserRestService,
 } from '@template/utils/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from 'src/modules/users/users.service';
+import { UsersService } from '#src/modules/users/users.service';
 import {
 	authLoginDto,
 	authLoginResult,
 	jwtPayload,
 	userResult,
-} from 'src/utils/tests/mocks/data.mocks';
+} from '#src/utils/tests/mocks/data.mocks';
 import { AuthService } from '../auth.service';
 
 describe('AuthService', () => {

@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from 'src/common/decorators/public';
+import { IS_PUBLIC_KEY } from '#src/common/decorators/public';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -21,7 +21,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	handleRequest(err, user, _info) {
+	handleRequest<TUser = unknown>(err: unknown, user: TUser, _info: unknown): TUser {
 		// You can throw an exception based on either "info" or "err" arguments
 		if (err || !user) {
 			throw err || new UnauthorizedException();

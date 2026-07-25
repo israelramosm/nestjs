@@ -1,10 +1,10 @@
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
-import { PASSWORD_REGEX } from 'src/common/constants';
+import { PASSWORD_REGEX } from '#src/common/constants';
 
 export class SignInUserDto {
 	@IsNotEmpty()
 	@IsEmail(undefined, { message: 'Please provide valid Email.' })
-	email: string;
+	email!: string;
 
 	@IsNotEmpty()
 	@Matches(PASSWORD_REGEX, {
@@ -14,5 +14,5 @@ export class SignInUserDto {
         one number and 
         one special character`,
 	})
-	password: string;
+	password!: string;
 }

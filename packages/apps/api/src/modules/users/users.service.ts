@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { PasswordsService } from '../passwords/passwords.service';
@@ -23,7 +23,7 @@ export class UsersService {
 	 * @param options is type of FindOneOptions, which represent the options to search a user.
 	 * @returns promise of user
 	 */
-	private findOneOnRepository(options?: FindOneOptions): Promise<User> {
+	private findOneOnRepository(options: FindOneOptions<User>): Promise<User | null> {
 		return this.userRepository.findOne(options);
 	}
 
@@ -71,9 +71,13 @@ export class UsersService {
 	 * @param options is type of FindOneOptions, which represent the options to search a user.
 	 * @returns promise of user
 	 */
-	findOneById(userId?: string): Promise<User> {
+	async findOneById(userId: string): Promise<User> {
 		this.logger.log(`Find one by user id :: ${userId} ...`);
-		return this.findOneOnRepository(findUserByUserIdQuery(userId));
+		const user = await this.findOneOnRepository(findUserByUserIdQuery(userId));
+		if (!user) {
+			throw new NotFoundException(`User with id ${userId} not found`);
+		}
+		return user;
 	}
 
 	/**
@@ -81,7 +85,7 @@ export class UsersService {
 	 * @param email is type of string
 	 * @returns promise of user
 	 */
-	findOneByEmail(email?: string): Promise<User> {
+	findOneByEmail(email: string): Promise<User | null> {
 		this.logger.log(`Find one by email :: ${email} ...`);
 		return this.findOneOnRepository(findUserByEmailQuery(email));
 	}
@@ -98,9 +102,9 @@ export class UsersService {
 		this.logger.log(`Update user :: ${userId} ...`);
 
 		const user: User = new User();
-		user.first_name = firstname;
-		user.last_name = lastname;
-		user.email = email;
+		if (firstname !== undefined) user.first_name = firstname;
+		if (lastname !== undefined) user.last_name = lastname;
+		if (email !== undefined) user.email = email;
 		user.user_id = userId;
 
 		return this.userRepository.save(user);

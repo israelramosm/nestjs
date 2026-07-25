@@ -5,7 +5,7 @@ import {
 	createProfileDto,
 	profileRemovedResult,
 	profileResult,
-} from 'src/utils/tests/mocks/data.mocks';
+} from '#src/utils/tests/mocks/data.mocks';
 import { ProfileController } from '../profiles.controller';
 import { ProfilesService } from '../profiles.service';
 

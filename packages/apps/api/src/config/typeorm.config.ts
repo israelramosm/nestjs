@@ -1,6 +1,6 @@
-import pgdbConfig from 'src/config/pgdb.config';
 import { DataSource } from 'typeorm';
-// import mysqldbConfig from 'src/config/mysqldb.config';
+import pgdbConfig from '#src/config/pgdb.config';
+// import mysqldbConfig from '#src/config/mysqldb.config';
 
 /**
  * This file is used to work with the TypeORM CLI

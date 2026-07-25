@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Logger, Post, Request } from '@nestjs/common';
-import { Public } from 'src/common/decorators/public';
+import { Public } from '#src/common/decorators/public';
+import { JwtPayload } from './auth';
 import { AuthService } from './auth.service';
 import { SignInUserDto } from './dto/sign-in.dto';
 
@@ -16,7 +17,7 @@ export class AuthController {
 	}
 
 	@Get('profile')
-	getProfile(@Request() req) {
+	getProfile(@Request() req: { user: JwtPayload }) {
 		return req.user;
 	}
 }

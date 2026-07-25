@@ -10,6 +10,6 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule, httpsOptions ? { httpsOptions } : {});
 	const configService = app.get(ConfigService);
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
-	await app.listen(configService.get('PORT'));
+	await app.listen(configService.get<number>('PORT') ?? 3000);
 }
 bootstrap();

@@ -6,14 +6,14 @@ import {
 	createMockRepository,
 	createMockRestServiceData,
 } from '@template/utils/tests/mocks/providers.mocks';
-import { PasswordsService } from 'src/modules/passwords/passwords.service';
-import { ProfilesService } from 'src/modules/profiles/profiles.service';
+import { PasswordsService } from '#src/modules/passwords/passwords.service';
+import { ProfilesService } from '#src/modules/profiles/profiles.service';
 import {
 	createUserDto,
 	passwordResult,
 	profileResult,
 	userResult,
-} from 'src/utils/tests/mocks/data.mocks';
+} from '#src/utils/tests/mocks/data.mocks';
 import { User } from '../entities/user.entity';
 import { findUserByEmailQuery, findUserByUserIdQuery } from '../queries/user.queries';
 import { UsersService } from '../users.service';

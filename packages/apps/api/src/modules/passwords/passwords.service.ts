@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { SALT_OR_ROUND } from 'src/common/constants';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { SALT_OR_ROUND } from '#src/common/constants';
 import { CreatePasswordDto } from './dto/create-password.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { Password } from './entities/password.entity';
@@ -26,7 +26,7 @@ export class PasswordsService {
 	 * @param options is type of FindOneOptions, which represent the options to search a password.
 	 * @returns promise of password
 	 */
-	private findOneOnRepository(options?: FindOneOptions): Promise<Password> {
+	private findOneOnRepository(options: FindOneOptions<Password>): Promise<Password | null> {
 		return this.passwordRepository.findOne(options);
 	}
 
@@ -61,9 +61,13 @@ export class PasswordsService {
 	 * @param passwordId is type of string, which represent the id of password
 	 * @returns promise of password
 	 */
-	findOneById(passwordId: string): Promise<Password> {
+	async findOneById(passwordId: string): Promise<Password> {
 		this.logger.log(`Find one by password id :: ${passwordId} ...`);
-		return this.findOneOnRepository(findPasswordByPasswordIdQuery(passwordId));
+		const password = await this.findOneOnRepository(findPasswordByPasswordIdQuery(passwordId));
+		if (!password) {
+			throw new NotFoundException(`Password with id ${passwordId} not found`);
+		}
+		return password;
 	}
 
 	/**
@@ -78,7 +82,7 @@ export class PasswordsService {
 		const { password } = updatePasswordDto;
 
 		const pass: Password = new Password();
-		pass.password = password;
+		if (password !== undefined) pass.password = password;
 		pass.password_id = passwordId;
 
 		return this.passwordRepository.save(pass);

@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Environments } from '@template/configs-envs/Environments';
 import { Request } from 'express';
-import { IS_PUBLIC_KEY } from 'src/common/decorators/public';
+import { IS_PUBLIC_KEY } from '#src/common/decorators/public';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {

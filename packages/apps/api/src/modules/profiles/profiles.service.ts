@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -19,7 +19,7 @@ export class ProfilesService {
 	 * @param options is type of FindOneOptions, which represent the options to search a profile.
 	 * @returns promise of profile
 	 */
-	private findOneOnRepository(options?: FindOneOptions): Promise<Profile> {
+	private findOneOnRepository(options: FindOneOptions<Profile>): Promise<Profile | null> {
 		return this.profileRepository.findOne(options);
 	}
 
@@ -42,9 +42,9 @@ export class ProfilesService {
 
 		const profile: Profile = new Profile();
 		profile.username = username;
-		profile.photo_url = photo_url;
-		profile.gender = gender;
-		profile.birthday = birthday;
+		if (photo_url !== undefined) profile.photo_url = photo_url;
+		if (gender !== undefined) profile.gender = gender;
+		if (birthday !== undefined) profile.birthday = birthday;
 
 		return this.profileRepository.save(profile);
 	}
@@ -64,9 +64,13 @@ export class ProfilesService {
 	 * @param profileId is type of string, which represent the id of profile.
 	 * @returns promise of profile
 	 */
-	findOneById(profileId: string): Promise<Profile> {
+	async findOneById(profileId: string): Promise<Profile> {
 		this.logger.log(`Find one by profile id :: ${profileId} ...`);
-		return this.findOneOnRepository(findProfileByProfileIdQuery(profileId));
+		const profile = await this.findOneOnRepository(findProfileByProfileIdQuery(profileId));
+		if (!profile) {
+			throw new NotFoundException(`Profile with id ${profileId} not found`);
+		}
+		return profile;
 	}
 
 	/**
@@ -74,7 +78,7 @@ export class ProfilesService {
 	 * @param username is type of string, which represents the username of profile
 	 * @returns promise of profile
 	 */
-	findOneByUsername(username: string): Promise<Profile> {
+	findOneByUsername(username: string): Promise<Profile | null> {
 		this.logger.log(`Find one by username :: ${username} ...`);
 		return this.findOneOnRepository(findProfileByUsernameQuery(username));
 	}
@@ -91,10 +95,10 @@ export class ProfilesService {
 		this.logger.log(`Update profile :: ${username} ...`);
 
 		const profile: Profile = new Profile();
-		profile.username = username;
-		profile.photo_url = photo_url;
-		profile.gender = gender;
-		profile.birthday = birthday;
+		if (username !== undefined) profile.username = username;
+		if (photo_url !== undefined) profile.photo_url = photo_url;
+		if (gender !== undefined) profile.gender = gender;
+		if (birthday !== undefined) profile.birthday = birthday;
 		profile.profile_id = profileId;
 
 		return this.profileRepository.save(profile);

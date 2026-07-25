@@ -3,7 +3,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMockRepository } from '@template/utils/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
-import { createPasswordDto, passwordResult } from 'src/utils/tests/mocks/data.mocks';
+import { createPasswordDto, passwordResult } from '#src/utils/tests/mocks/data.mocks';
 import { Password } from '../entities/password.entity';
 import { PasswordsService } from '../passwords.service';
 import { findPasswordByPasswordIdQuery } from '../queries/password.queries';

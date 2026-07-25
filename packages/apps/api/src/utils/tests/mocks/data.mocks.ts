@@ -1,8 +1,9 @@
-import { CreatePasswordDto } from 'src/modules/passwords/dto/create-password.dto';
-import { Password } from 'src/modules/passwords/entities/password.entity';
-import { CreateProfileDto } from 'src/modules/profiles/dto/create-profile.dto';
-import { Profile } from 'src/modules/profiles/entities/profile.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { CreatePasswordDto } from '#src/modules/passwords/dto/create-password.dto';
+import { Password } from '#src/modules/passwords/entities/password.entity';
+import { CreateProfileDto } from '#src/modules/profiles/dto/create-profile.dto';
+import { Profile } from '#src/modules/profiles/entities/profile.entity';
+import { JwtPayload } from '../../../modules/auth/auth';
 import { CreateUserDto } from '../../../modules/users/dto/create-user.dto';
 import { User } from '../../../modules/users/entities/user.entity';
 
@@ -35,7 +36,7 @@ export const passwordResult = {
 	created_at: new Date(),
 	updated_at: new Date(),
 	deleted_at: null,
-} as Password;
+} as unknown as Password;
 
 export const profileResult = {
 	profile_id: profileId,
@@ -47,7 +48,7 @@ export const profileResult = {
 	created_at: new Date(),
 	updated_at: new Date(),
 	deleted_at: null,
-} as Profile;
+} as unknown as Profile;
 
 export const userCallWith = {
 	first_name: createUserDto.firstname,
@@ -69,7 +70,7 @@ export const userResult = {
 	created_at: new Date(),
 	updated_at: new Date(),
 	deleted_at: null,
-} as User;
+} as unknown as User;
 
 export const profileRemovedResult = {
 	raw: [],
@@ -107,9 +108,9 @@ export const authProfileResult = {
 	exp: 1720322222,
 };
 
-export const reqAuthProfile = {
+export const reqAuthProfile: { user: JwtPayload } = {
 	user: authProfileResult,
-} as unknown as Request;
+};
 
 export const jwtPayload = {
 	username: profileResult.username,
