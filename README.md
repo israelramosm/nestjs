@@ -30,7 +30,7 @@ packages/
     └── dto/                 # @template/dto (DTOs compartidos)
 templates/                   # plantillas para crear apps/libs
 scripts/                     # create-package.sh (generador de paquetes)
-docs/                        # MONOREPO.md, NAMING-CONVENTIONS.md
+docs/                        # DATABASE-NOTES.md, MONOREPO.md, NAMING-CONVENTIONS.md
 ```
 
 Ver [`docs/MONOREPO.md`](docs/MONOREPO.md) y
@@ -62,15 +62,18 @@ cp packages/libs/configs/envs/.env.example packages/libs/configs/envs/.env
 
 | Script                | Acción                                        |
 | --------------------- | --------------------------------------------- |
-| `bun run biome:check` | lint + format check de todo el repo           |
-| `bun run biome:fix`   | corrige lint + format                         |
-| `bun run typecheck`   | `typecheck` en todos los paquetes             |
-| `bun run all:apps <s>`| corre el script `<s>` en todas las apps       |
-| `bun run all:libs <s>`| corre el script `<s>` en todas las libs       |
+| `bun run biome:check`  | lint + format check de todo el repo          |
+| `bun run biome:fix`    | corrige lint + format                        |
+| `bun run biome:format` | formatea todo el repo (`biome format --write`)|
+| `bun run biome:lint`   | solo lint (`biome lint`)                      |
+| `bun run typecheck`    | `typecheck` en todos los paquetes            |
+| `bun run all:apps <s>` | corre el script `<s>` en todas las apps      |
+| `bun run all:libs <s>` | corre el script `<s>` en todas las libs      |
 | `bun run filter <pkg> <s>` | corre `<s>` en un workspace concreto     |
-| `bun run dev:all`     | arranca todas las apps en paralelo            |
-| `bun run docker:up`   | levanta la infra local (postgres/redis)       |
-| `bun run docker:down` | baja la infra local                           |
+| `bun run dev:all`      | arranca todas las apps en paralelo           |
+| `bun run watch:libs`   | arranca todas las libs en watch (paralelo)   |
+| `bun run docker:up`    | levanta la infra local (postgres/redis)      |
+| `bun run docker:down`  | baja la infra local                          |
 
 Para un paquete concreto: `mise run test api` o `bun run --filter '@template/api' test`.
 
@@ -101,9 +104,7 @@ bun install
   forzar HTTP con `HTTPS_ENABLED=false`.
 - **Entidades TypeORM**: las relaciones usan el tipo `Relation<>` de TypeORM
   para evitar el TDZ por dependencias circulares bajo ESM/Bun.
-- **Tests con `bun test`**: `bun run --filter '@template/api' test` (unit) y
-  `test:e2e` (requiere DB). Cada archivo de test corre en su propio proceso
-  (`scripts/run-tests.ts`) para replicar el aislamiento por-archivo que daba
-  Jest — los specs comparten mocks singleton de `@template/utils`. Los tests
-  unitarios mockean los repositorios (no requieren base de datos); los e2e sí
-  requieren una base de datos activa.
+- **Tests con `bun test`**: los tests corren con el runner nativo de Bun
+  directamente. Unitarios: `bun run --filter '@template/api' test` (mockean los
+  repositorios, no requieren base de datos). E2E: `bun run --filter
+  '@template/api' test:e2e` (requiere una base de datos activa).

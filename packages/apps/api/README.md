@@ -7,15 +7,24 @@ App NestJS del monorepo. Incluye módulos de `auth` (JWT/Passport), `users`,
 
 Ejecuta con `mise run <task> api` o `bun run --filter '@template/api' <script>`.
 
-| Script (Bun filter)                                    | mise                | Acción                                  |
-| ------------------------------------------------------ | ------------------- | --------------------------------------- |
-| `bun run --filter '@template/api' start:dev`           | —                   | arranca con `nest start --watch`        |
-| `bun run --filter '@template/api' dev`                 | `mise run dev api`  | arranca directo con Bun (`bun --watch`) |
-| `bun run --filter '@template/api' build`               | `mise run build api`| build de producción (`nest build`)      |
-| `bun run --filter '@template/api' test`                | `mise run test api` | tests unitarios (Jest)                  |
-| `bun run --filter '@template/api' test:e2e`            | —                   | tests e2e (requiere DB)                 |
-| `bun run --filter '@template/api' typecheck`           | —                   | `tsc --noEmit`                          |
-| `bun run --filter '@template/api' migration:run`       | —                   | corre migraciones de TypeORM            |
+| Script (Bun filter)                                    | mise                 | Acción                                            |
+| ------------------------------------------------------ | -------------------- | ------------------------------------------------- |
+| `bun run --filter '@template/api' start`               | `mise run start api` | arranca con Bun (`bun src/main.ts`)               |
+| `bun run --filter '@template/api' start:dev`           | —                    | arranca en watch (`bun --watch src/main.ts`)      |
+| `bun run --filter '@template/api' start:debug`         | —                    | watch + inspector (`bun --inspect --watch`)       |
+| `bun run --filter '@template/api' start:prod`          | —                    | arranca en producción (`NODE_ENV=production bun`) |
+| `bun run --filter '@template/api' dev`                 | `mise run dev api`   | arranca directo con Bun (`bun --watch`)           |
+| `bun run --filter '@template/api' build`               | `mise run build api` | build (`nest build`)                              |
+| `bun run --filter '@template/api' clean`               | —                    | limpia `dist` y `*.tsbuildinfo`                   |
+| `bun run --filter '@template/api' typecheck`           | —                    | `tsc --noEmit`                                    |
+| `bun run --filter '@template/api' test`                | `mise run test api`  | tests unitarios (`bun test`)                      |
+| `bun run --filter '@template/api' test:watch`          | —                    | tests unitarios en watch (`bun test --watch`)     |
+| `bun run --filter '@template/api' test:cov`            | —                    | tests con cobertura (`bun test --coverage`)       |
+| `bun run --filter '@template/api' test:e2e`            | —                    | tests e2e (requiere DB)                           |
+| `bun run --filter '@template/api' migration:generate`  | —                    | genera una migración de TypeORM                   |
+| `bun run --filter '@template/api' migration:create`    | —                    | crea una migración vacía                          |
+| `bun run --filter '@template/api' migration:run`       | —                    | corre migraciones de TypeORM                      |
+| `bun run --filter '@template/api' migration:revert`    | —                    | revierte la última migración                      |
 
 ## Dependencias del workspace
 
