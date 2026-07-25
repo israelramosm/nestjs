@@ -1,0 +1,25 @@
+{
+	"name": "@template/[APP_NAME]",
+	"version": "0.0.1",
+	"description": "[APP_DESCRIPTION]",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"imports": {
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {
+		"test": "echo "
+	},
+	"dependencies": {},
+	"devDependencies": {}
+}

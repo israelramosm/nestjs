@@ -1,73 +1,110 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# NestJS Monorepo Template
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Template **genérico** de monorepo para NestJS basado en **Bun workspaces**,
+**Biome**, **mise** y **TypeORM**. Pensado para clonarse y empezar: mínimo y
+listo para crecer con nuevas apps y libs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+- **Bun** (workspaces + `catalog:` para versiones compartidas) como package
+  manager y runtime.
+- **Biome** para lint + format (reemplaza ESLint + Prettier).
+- **mise** para fijar versiones de herramientas y gestionar `.env`.
+- **husky** para hooks de git (`biome check` en pre-commit).
+- **TypeORM** (Postgres por defecto, MySQL bajo profile).
+- **`bun test`** para tests unitarios y e2e de la app `api`.
+- **docker-compose** para infra local (postgres, mysql, redis, kafka).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Estructura
 
-## Installation
-
-```bash
-$ npm install
+```text
+packages/
+├── apps/
+│   └── api/                 # app NestJS (auth, users, profiles, passwords)
+└── libs/
+    ├── configs/envs/        # @template/configs-envs (Environments, Joi, certs)
+    ├── api/redis/           # @template/api-redis (módulo global ioredis)
+    ├── kafka/               # @template/kafka (módulo + productor kafkajs)
+    ├── interfaces/          # @template/interfaces (contratos compartidos)
+    ├── utils/               # @template/utils (tipos + mocks de test)
+    └── dto/                 # @template/dto (DTOs compartidos)
+templates/                   # plantillas para crear apps/libs
+scripts/                     # create-package.sh (generador de paquetes)
+docs/                        # DATABASE-NOTES.md, MONOREPO.md, NAMING-CONVENTIONS.md
 ```
 
-## Running the app
+Ver [`docs/MONOREPO.md`](docs/MONOREPO.md) y
+[`docs/NAMING-CONVENTIONS.md`](docs/NAMING-CONVENTIONS.md).
 
-```bash
-# development
-$ npm run start
+## Requisitos
 
-# watch mode
-$ npm run start:dev
+- [Bun](https://bun.sh) >= 1.2
+- [mise](https://mise.jdx.dev) (opcional, recomendado para fijar versiones)
+- Docker (opcional, para infra local)
 
-# production mode
-$ npm run start:prod
+## Quick start
+
+```sh
+mise install                 # instala bun/biome (si usas mise)
+bun install                  # instala dependencias del workspace
+mise run env:create          # crea packages/libs/configs/envs/.env
+bun run docker:up            # levanta postgres/redis (mysql y kafka con profile)
+mise run dev api             # arranca la app api en watch (o: bun run --filter '@template/api' dev)
 ```
 
-## Test
+Sin mise, copia el `.env` manualmente:
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```sh
+cp packages/libs/configs/envs/.env.example packages/libs/configs/envs/.env
 ```
 
-## Support
+## Scripts raíz
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Script                | Acción                                        |
+| --------------------- | --------------------------------------------- |
+| `bun run biome:check`  | lint + format check de todo el repo          |
+| `bun run biome:fix`    | corrige lint + format                        |
+| `bun run biome:format` | formatea todo el repo (`biome format --write`)|
+| `bun run biome:lint`   | solo lint (`biome lint`)                      |
+| `bun run typecheck`    | `typecheck` en todos los paquetes            |
+| `bun run all:apps <s>` | corre el script `<s>` en todas las apps      |
+| `bun run all:libs <s>` | corre el script `<s>` en todas las libs      |
+| `bun run filter <pkg> <s>` | corre `<s>` en un workspace concreto     |
+| `bun run dev:all`      | arranca todas las apps en paralelo           |
+| `bun run watch:libs`   | arranca todas las libs en watch (paralelo)   |
+| `bun run docker:up`    | levanta la infra local (postgres/redis)      |
+| `bun run docker:down`  | baja la infra local                          |
 
-## Stay in touch
+Para un paquete concreto: `mise run test api` o `bun run --filter '@template/api' test`.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Crear una app o lib
 
-## License
+```sh
+scripts/create-package.sh app <nombre> "<descripción>"
+scripts/create-package.sh lib <nombre>
+bun install
+```
 
-Nest is [MIT licensed](LICENSE).
+## Convenciones de imports
+
+- Interno al paquete: `#src/*` o `src/*` (baseUrl).
+- Entre paquetes: `@template/<paquete>` con dependencia `"workspace:*"`.
+- Al clonar el template, renombra el scope `@template/` de forma global.
+
+## Notas
+
+- **Runtime Bun**: dev y producción corren directo con Bun (`bun --watch
+  src/main.ts` / `bun src/main.ts`), sin paso de build. `nest build` sigue
+  disponible para generar `dist/`, pero no es necesario para arrancar.
+- **Carga de `.env`**: la app carga el `.env` compartido por sí sola
+  (`@template/configs-envs/load-env`), sin depender de mise ni del cwd. mise
+  sigue siendo útil para fijar versiones y gestionar `.env`, pero es opcional.
+- **HTTPS opcional**: la app arranca en HTTP por defecto. Si existen
+  `key.pem`/`cert.pem` en `configs-envs/src/certs/` levanta en HTTPS; puedes
+  forzar HTTP con `HTTPS_ENABLED=false`.
+- **Entidades TypeORM**: las relaciones usan el tipo `Relation<>` de TypeORM
+  para evitar el TDZ por dependencias circulares bajo ESM/Bun.
+- **Tests con `bun test`**: los tests corren con el runner nativo de Bun
+  directamente. Unitarios: `bun run --filter '@template/api' test` (mockean los
+  repositorios, no requieren base de datos). E2E: `bun run --filter
+  '@template/api' test:e2e` (requiere una base de datos activa).

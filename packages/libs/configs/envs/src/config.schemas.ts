@@ -1,0 +1,33 @@
+import * as Joi from 'joi';
+
+export const ConfigSchemas = {
+	validations: Joi.object({
+		PORT: Joi.number(),
+		MODE: Joi.string().required(),
+		POSTGRES_HOST: Joi.string().required(),
+		POSTGRES_PORT: Joi.number().required(),
+		POSTGRES_USER: Joi.string().required(),
+		POSTGRES_PASSWORD: Joi.string().required(),
+		POSTGRES_DATABASE: Joi.string().required(),
+		POSTGRES_SYNCHRONIZE: Joi.boolean().required(),
+		POSTGRES_RUN_MIGRATIONS: Joi.boolean().required(),
+		POSTGRES_LOGGING: Joi.boolean().required(),
+		MYSQL_HOST: Joi.string().required(),
+		MYSQL_PORT: Joi.number().required(),
+		MYSQL_USER: Joi.string().required(),
+		MYSQL_PASSWORD: Joi.string().required(),
+		MYSQL_DATABASE: Joi.string().required(),
+		MYSQL_SYNCHRONIZE: Joi.boolean().required(),
+		MYSQL_RUN_MIGRATIONS: Joi.boolean().required(),
+		MYSQL_LOGGING: Joi.boolean().required(),
+		JWT_SECRET: Joi.string().required(),
+		JWT_EXPIRATION: Joi.number().required(),
+		REDIS_HOST: Joi.string().default('localhost'),
+		REDIS_PORT: Joi.number().default(6379),
+		REDIS_PASSWORD: Joi.string().allow('').optional(),
+		REDIS_DB: Joi.number().default(0),
+		KAFKA_BROKERS: Joi.string().default('localhost:9092'),
+		KAFKA_CLIENT_ID: Joi.string().default('template'),
+		KAFKA_GROUP_ID: Joi.string().default('template-consumer'),
+	}),
+};

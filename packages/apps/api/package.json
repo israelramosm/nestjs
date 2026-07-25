@@ -1,0 +1,86 @@
+{
+	"name": "@template/api",
+	"version": "0.0.1",
+	"description": "NestJS API app (template)",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"imports": {
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {
+		"start": "bun src/main.ts",
+		"start:dev": "bun --watch src/main.ts",
+		"start:debug": "bun --inspect --watch src/main.ts",
+		"start:prod": "NODE_ENV=production bun src/main.ts",
+		"dev": "bun --watch src/main.ts",
+		"build": "nest build",
+		"clean": "rm -rf dist *.tsbuildinfo",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test src",
+		"test:watch": "bun test --watch src",
+		"test:cov": "bun test --coverage src",
+		"test:e2e": "bun test e2e",
+		"typeorm:cli": "bun ../../../node_modules/typeorm/cli.js -d src/config/typeorm.config.ts",
+		"migration:generate": "bun run typeorm:cli migration:generate",
+		"migration:create": "bun run typeorm:cli migration:create",
+		"migration:run": "bun run typeorm:cli migration:run",
+		"migration:revert": "bun run typeorm:cli migration:revert"
+	},
+	"dependencies": {
+		"@nestjs/common": "catalog:",
+		"@nestjs/config": "catalog:",
+		"@nestjs/core": "catalog:",
+		"@nestjs/jwt": "catalog:",
+		"@nestjs/mapped-types": "catalog:",
+		"@nestjs/passport": "catalog:",
+		"@nestjs/platform-express": "catalog:",
+		"@nestjs/typeorm": "catalog:",
+		"@template/configs-envs": "workspace:*",
+		"@template/dto": "workspace:*",
+		"@template/interfaces": "workspace:*",
+		"@template/api-redis": "workspace:*",
+		"@template/kafka": "workspace:*",
+		"@template/utils": "workspace:*",
+		"bcrypt": "catalog:",
+		"class-transformer": "catalog:",
+		"class-validator": "catalog:",
+		"dotenv": "catalog:",
+		"mysql2": "catalog:",
+		"passport": "catalog:",
+		"passport-jwt": "catalog:",
+		"passport-local": "catalog:",
+		"pg": "catalog:",
+		"reflect-metadata": "catalog:",
+		"rxjs": "catalog:",
+		"typeorm": "catalog:",
+		"uuid": "catalog:"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^10.3.2",
+		"@nestjs/schematics": "^10.1.1",
+		"@nestjs/testing": "catalog:",
+		"@types/bun": "catalog:",
+		"@types/express": "^4.17.21",
+		"@types/node": "catalog:",
+		"@types/passport-jwt": "catalog:",
+		"@types/passport-local": "catalog:",
+		"@types/pg": "catalog:",
+		"@types/supertest": "catalog:",
+		"@types/uuid": "catalog:",
+		"source-map-support": "^0.5.21",
+		"supertest": "catalog:",
+		"ts-loader": "^9.5.1",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "catalog:"
+	}
+}

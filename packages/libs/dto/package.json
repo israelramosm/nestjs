@@ -1,0 +1,25 @@
+{
+	"name": "@template/dto",
+	"version": "0.0.1",
+	"description": "DTOs y tipos compartidos entre apps",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"imports": {
+		"#src/*": {
+			"types": "./src/*.ts",
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"clean": "rm -rf dist *.tsbuildinfo",
+		"typecheck": "tsc --noEmit"
+	}
+}
