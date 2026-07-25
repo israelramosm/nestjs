@@ -78,6 +78,9 @@
         "dotenv": "catalog:",
         "joi": "catalog:",
       },
+      "devDependencies": {
+        "@types/node": "catalog:",
+      },
     },
     "packages/libs/dto": {
       "name": "@template/dto",

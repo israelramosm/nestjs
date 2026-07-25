@@ -29,5 +29,8 @@
 	"dependencies": {
 		"dotenv": "catalog:",
 		"joi": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:"
 	}
 }
