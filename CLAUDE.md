@@ -55,7 +55,7 @@ paquetes nuevos con esa misma convención.
   sigas al pie de la letra.
 - **`docs/MONOREPO.md` menciona `jest.config.json`** en el árbol de la app;
   ya no existe, los tests corren con el runner nativo de Bun.
-- Imports cross-package van **sin** extensión (`@template/dto/pagination.dto`):
+- Imports cross-package van **sin** extensión (`@template/shared/dto/pagination.dto`):
   el `exports` map de cada paquete (`"./*"` → `"./src/*.ts"`) la agrega. Con
   `.ts` explícito el typecheck falla con TS2307.
 - El script `create-package.sh` no corre `bun install` por ti ni agrega la

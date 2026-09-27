@@ -29,9 +29,9 @@ Ejecuta con `mise run <task> api` o `bun run --filter '@template/api' <script>`.
 ## Dependencias del workspace
 
 - `@template/configs-envs`: `Environments`, esquemas Joi, carga de `.env`, certs.
-- `@template/utils`: tipos genéricos y helpers de mocks para tests.
-- `@template/dto`: DTOs compartidos.
-- `@template/interfaces`: contratos/tipos compartidos.
+- `@template/shared`: tipos, DTOs, interfaces y factories de mocks para tests.
+- `@template/configs-database`: datasources de TypeORM, `DatabaseModule` y migraciones.
+- `@template/modules-identity`: módulos de auth, users, profiles y passwords.
 - `@template/api-redis`: módulo global de Redis (`ioredis`), cableado en `AppModule`.
 - `@template/kafka`: módulo + productor Kafka (opt-in, no cableado por defecto).
 
@@ -40,11 +40,7 @@ Ejecuta con `mise run <task> api` o `bun run --filter '@template/api' <script>`.
 ```text
 src/
 ├── main.ts, app.module.ts, app.controller.ts, app.service.ts
-├── common/          # constants, decorators
-├── config/          # pgdb/mysqldb/typeorm config (específicos de la app)
-├── database/        # database.module + migrations (pg y mysql)
-├── utils/tests/     # data.mocks (fixtures específicos de la app)
-└── modules/         # auth, users, profiles, passwords
+└── config/          # typeorm.config.ts: datasource del CLI, con las entidades
 e2e/                 # tests e2e
 resources/           # Insomnia, ERD, drawio
 ```

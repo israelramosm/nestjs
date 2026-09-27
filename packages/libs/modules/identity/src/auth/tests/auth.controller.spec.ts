@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
-import { createMockAuthService } from '@template/utils/tests/mocks/providers.mocks';
+import { createMockAuthService } from '@template/shared/tests/mocks/providers.mocks';
 import { AuthController } from '#src/auth/auth.controller';
 import { AuthService } from '#src/auth/auth.service';
 import {

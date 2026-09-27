@@ -63,8 +63,8 @@ packages/libs/<group>/<name>  ->  @template/<group>-<name>
 Ejemplos:
 
 ```text
-packages/libs/utils          ->  @template/utils
-packages/libs/dto            ->  @template/dto
+packages/libs/shared         ->  @template/shared
+packages/libs/kafka          ->  @template/kafka
 packages/libs/configs/envs   ->  @template/configs-envs
 ```
 
@@ -121,7 +121,7 @@ Usa siempre el nombre publicado del workspace:
 
 ```ts
 import { Environments } from '@template/configs-envs/Environments';
-import { PaginationDto } from '@template/dto/pagination.dto';
+import { PaginationDto } from '@template/shared/dto/pagination.dto';
 ```
 
 El paquete consumidor debe declarar la dependencia interna así:
@@ -129,7 +129,7 @@ El paquete consumidor debe declarar la dependencia interna así:
 ```json
 {
   "dependencies": {
-    "@template/dto": "workspace:*"
+    "@template/shared": "workspace:*"
   }
 }
 ```

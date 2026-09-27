@@ -46,9 +46,7 @@ nestjs/
         ├── api/
         │   └── redis/
         ├── kafka/
-        ├── interfaces/
-        ├── utils/
-        └── dto/
+        └── shared/
 ```
 
 ## Stack técnico
@@ -74,9 +72,7 @@ nestjs/
 | Base de datos | `@template/configs-database` | Datasources de Postgres/MySQL, `DatabaseModule` y migraciones. |
 | Identidad | `@template/modules-identity` | Módulos NestJS de auth, users, profiles y passwords, con sus entidades. |
 | Envs y config | `@template/configs-envs` | `Environments`, esquemas Joi, carga de `.env`, certs. |
-| Utils | `@template/utils` | Tipos y mocks de providers genéricos. |
-| DTOs | `@template/dto` | DTOs compartidos (p. ej. paginación). |
-| Interfaces | `@template/interfaces` | Contratos/tipos compartidos (p. ej. `ApiResponse`). |
+| Compartidos | `@template/shared` | Tipos, DTOs, interfaces y factories de mocks de test. |
 | Redis | `@template/api-redis` | Módulo global NestJS sobre `ioredis` (`lazyConnect`). |
 | Kafka | `@template/kafka` | Módulo + productor sobre `@nestjs/microservices`/`kafkajs`. |
 
@@ -137,8 +133,7 @@ bun run --filter '@template/api' test
 bun run --filter '@template/api' test:e2e
 
 # Lib compartida
-bun run --filter '@template/utils' typecheck
-bun run --filter '@template/dto' typecheck
+bun run --filter '@template/shared' typecheck
 
 # Todas las apps / libs a la vez
 bun run all:apps typecheck
@@ -168,7 +163,7 @@ Ejemplo:
 
 ```ts
 import { Environments } from '@template/configs-envs/Environments';
-import { PaginationDto } from '@template/dto/pagination.dto';
+import { PaginationDto } from '@template/shared/dto/pagination.dto';
 import { localHelper } from '#src/local-helper';
 ```
 

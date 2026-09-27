@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
-import { createMockRestService } from '@template/utils/tests/mocks/providers.mocks';
+import { createMockRestService } from '@template/shared/tests/mocks/providers.mocks';
 import { ProfileController } from '#src/profiles/profiles.controller';
 import { ProfilesService } from '#src/profiles/profiles.service';
 import { createProfileDto, profileRemovedResult, profileResult } from '#src/tests/mocks/data.mocks';

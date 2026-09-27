@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { HealthCheck } from '@template/utils/types';
+import type { HealthCheck } from '@template/shared/types';
 
 @Injectable()
 export class AppService {

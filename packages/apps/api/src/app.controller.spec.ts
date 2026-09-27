@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
-import type { HealthCheck } from '@template/utils/types';
+import type { HealthCheck } from '@template/shared/types';
 import { AppController } from '#src/app.controller';
 import { AppService } from '#src/app.service';
 

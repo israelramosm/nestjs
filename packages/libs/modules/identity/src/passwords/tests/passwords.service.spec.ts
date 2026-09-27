@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { createMockRepository } from '@template/utils/tests/mocks/providers.mocks';
+import { createMockRepository } from '@template/shared/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
 import { Password } from '#src/passwords/entities/password.entity';
 import { PasswordsService } from '#src/passwords/passwords.service';

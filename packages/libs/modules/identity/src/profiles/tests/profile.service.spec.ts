@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { createMockRepository } from '@template/utils/tests/mocks/providers.mocks';
+import { createMockRepository } from '@template/shared/tests/mocks/providers.mocks';
 import { Profile } from '#src/profiles/entities/profile.entity';
 import { ProfilesService } from '#src/profiles/profiles.service';
 import {

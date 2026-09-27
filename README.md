@@ -20,14 +20,14 @@ listo para crecer con nuevas apps y libs.
 ```text
 packages/
 ├── apps/
-│   └── api/                 # app NestJS (auth, users, profiles, passwords)
+│   └── api/                 # app NestJS (arranque, health check, CLI de TypeORM)
 └── libs/
+    ├── configs/database/    # @template/configs-database (datasources, migraciones)
     ├── configs/envs/        # @template/configs-envs (Environments, Joi, certs)
+    ├── modules/identity/    # @template/modules-identity (auth, users, profiles, passwords)
     ├── api/redis/           # @template/api-redis (módulo global ioredis)
     ├── kafka/               # @template/kafka (módulo + productor kafkajs)
-    ├── interfaces/          # @template/interfaces (contratos compartidos)
-    ├── utils/               # @template/utils (tipos + mocks de test)
-    └── dto/                 # @template/dto (DTOs compartidos)
+    └── shared/              # @template/shared (tipos, DTOs, interfaces, mocks)
 templates/                   # plantillas para crear apps/libs
 scripts/                     # create-package.sh (generador de paquetes)
 docs/                        # DATABASE-NOTES.md, MONOREPO.md, NAMING-CONVENTIONS.md

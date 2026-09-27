@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { Public } from '@template/modules-identity/common/decorators/public';
-import type { HealthCheck } from '@template/utils/types';
+import type { HealthCheck } from '@template/shared/types';
 import { AppService } from '#src/app.service';
 
 @Controller()

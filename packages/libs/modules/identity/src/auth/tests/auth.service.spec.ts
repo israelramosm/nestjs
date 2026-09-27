@@ -5,7 +5,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import {
 	createMockJWTService,
 	createMockUserRestService,
-} from '@template/utils/tests/mocks/providers.mocks';
+} from '@template/shared/tests/mocks/providers.mocks';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from '#src/auth/auth.service';
 import { authLoginDto, authLoginResult, jwtPayload, userResult } from '#src/tests/mocks/data.mocks';

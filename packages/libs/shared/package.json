@@ -1,7 +1,7 @@
 {
-	"name": "@template/dto",
+	"name": "@template/shared",
 	"version": "0.0.1",
-	"description": "DTOs y tipos compartidos entre apps",
+	"description": "Tipos, DTOs, interfaces y mocks de test compartidos entre paquetes",
 	"private": true,
 	"type": "module",
 	"exports": {
@@ -20,5 +20,8 @@
 	"scripts": {
 		"clean": "rm -rf dist *.tsbuildinfo",
 		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/bun": "catalog:"
 	}
 }

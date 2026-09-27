@@ -5,7 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import {
 	createMockRepository,
 	createMockRestServiceData,
-} from '@template/utils/tests/mocks/providers.mocks';
+} from '@template/shared/tests/mocks/providers.mocks';
 import { PasswordsService } from '#src/passwords/passwords.service';
 import { ProfilesService } from '#src/profiles/profiles.service';
 import {

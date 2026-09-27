@@ -25,11 +25,9 @@
         "@template/api-redis": "workspace:*",
         "@template/configs-database": "workspace:*",
         "@template/configs-envs": "workspace:*",
-        "@template/dto": "workspace:*",
-        "@template/interfaces": "workspace:*",
         "@template/kafka": "workspace:*",
         "@template/modules-identity": "workspace:*",
-        "@template/utils": "workspace:*",
+        "@template/shared": "workspace:*",
         "bcrypt": "catalog:",
         "class-transformer": "catalog:",
         "class-validator": "catalog:",
@@ -94,14 +92,6 @@
         "@types/node": "catalog:",
       },
     },
-    "packages/libs/dto": {
-      "name": "@template/dto",
-      "version": "0.0.1",
-    },
-    "packages/libs/interfaces": {
-      "name": "@template/interfaces",
-      "version": "0.0.1",
-    },
     "packages/libs/kafka": {
       "name": "@template/kafka",
       "version": "0.0.1",
@@ -137,7 +127,7 @@
       },
       "devDependencies": {
         "@nestjs/testing": "catalog:",
-        "@template/utils": "workspace:*",
+        "@template/shared": "workspace:*",
         "@types/bun": "catalog:",
         "@types/express": "^5.0.0",
         "@types/node": "catalog:",
@@ -147,8 +137,8 @@
         "typescript": "catalog:",
       },
     },
-    "packages/libs/utils": {
-      "name": "@template/utils",
+    "packages/libs/shared": {
+      "name": "@template/shared",
       "version": "0.0.1",
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -278,15 +268,11 @@
 
     "@template/configs-envs": ["@template/configs-envs@workspace:packages/libs/configs/envs"],
 
-    "@template/dto": ["@template/dto@workspace:packages/libs/dto"],
-
-    "@template/interfaces": ["@template/interfaces@workspace:packages/libs/interfaces"],
-
     "@template/kafka": ["@template/kafka@workspace:packages/libs/kafka"],
 
     "@template/modules-identity": ["@template/modules-identity@workspace:packages/libs/modules/identity"],
 
-    "@template/utils": ["@template/utils@workspace:packages/libs/utils"],
+    "@template/shared": ["@template/shared@workspace:packages/libs/shared"],
 
     "@tokenizer/inflate": ["@tokenizer/inflate@0.4.1", "", { "dependencies": { "debug": "^4.4.3", "token-types": "^6.1.1" } }, "sha512-2mAv+8pkG6GIZiF1kNg1jAjh27IDxEPKwdGul3snfztFerfPGI1LjDezZp3i7BElXompqEtPmoPx6c2wgtWsOA=="],
 

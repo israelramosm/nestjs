@@ -1,6 +1,6 @@
 /**
  * Contrato genérico de respuesta de API. Marca el patrón de compartir
- * interfaces entre apps del monorepo (@template/interfaces).
+ * interfaces entre apps del monorepo (@template/shared).
  */
 export interface ApiResponse<T = unknown> {
 	success: boolean;

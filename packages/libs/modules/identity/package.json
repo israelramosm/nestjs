@@ -42,7 +42,7 @@
 	},
 	"devDependencies": {
 		"@nestjs/testing": "catalog:",
-		"@template/utils": "workspace:*",
+		"@template/shared": "workspace:*",
 		"@types/bun": "catalog:",
 		"@types/express": "^5.0.0",
 		"@types/node": "catalog:",
