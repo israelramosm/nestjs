@@ -56,21 +56,15 @@
 		"biome:fix": "biome check --write .",
 		"biome:format": "biome format --write .",
 		"biome:lint": "biome lint .",
-		"all:apps": "bun run --filter './packages/apps/*/**'",
-		"all:libs": "bun run --filter './packages/libs/*/**'",
-		"filter": "bun run --filter",
-		"base": "bun run --filter '*'",
 		"dev:all": "bun run --filter './packages/apps/*/**' --parallel dev",
 		"typecheck": "bun run --filter '*' typecheck",
 		"test": "bun run --filter '*' test",
 		"docker:up": "docker compose up -d",
 		"docker:down": "docker compose down",
-		"watch:libs": "bun run --filter './packages/libs/**' --parallel dev",
-		"prepare": "husky || true"
+		"watch:libs": "bun run --filter './packages/libs/**' --parallel dev"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
-		"husky": "^9.0.11",
 		"typescript": "catalog:"
 	}
 }

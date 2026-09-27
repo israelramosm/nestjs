@@ -1,0 +1,8 @@
+#!/bin/sh
+# Hook versionado. Se activa con: mise run hooks (o mise run setup).
+# Toda la logica vive en la task, no aqui.
+if ! command -v mise >/dev/null 2>&1; then
+	echo "pre-commit: mise no esta en el PATH, se omite el check" >&2
+	exit 0
+fi
+exec mise run check:staged

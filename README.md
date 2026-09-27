@@ -38,18 +38,19 @@ Ver [`docs/MONOREPO.md`](docs/MONOREPO.md) y
 
 ## Requisitos
 
-- [Bun](https://bun.sh) >= 1.2
-- [mise](https://mise.jdx.dev) (opcional, recomendado para fijar versiones)
+- [mise](https://mise.jdx.dev) — fija la versión de Bun y es el entry point de
+  todas las tareas del repo (`mise tasks` las lista).
+- [Bun](https://bun.sh) >= 1.2 — lo instala mise.
 - Docker (opcional, para infra local)
 
 ## Quick start
 
 ```sh
-mise install                 # instala bun/biome (si usas mise)
-bun install                  # instala dependencias del workspace
+mise install                 # instala la versión de bun fijada en .mise.toml
+mise run setup               # bun install + activa los git hooks de .githooks/
 mise run env:create          # crea packages/libs/configs/envs/.env
-bun run docker:up            # levanta postgres/redis (mysql y kafka con profile)
-mise run dev api             # arranca la app api en watch (o: bun run --filter '@template/api' dev)
+mise run docker:up           # levanta postgres/redis (mysql y kafka con profile)
+mise run dev api             # arranca la app api en watch
 ```
 
 Sin mise, copia el `.env` manualmente:
@@ -58,32 +59,57 @@ Sin mise, copia el `.env` manualmente:
 cp packages/libs/configs/envs/.env.example packages/libs/configs/envs/.env
 ```
 
-## Scripts raíz
+## Tareas
 
-| Script                | Acción                                        |
-| --------------------- | --------------------------------------------- |
-| `bun run biome:check`  | lint + format check de todo el repo          |
-| `bun run biome:fix`    | corrige lint + format                        |
-| `bun run biome:format` | formatea todo el repo (`biome format --write`)|
-| `bun run biome:lint`   | solo lint (`biome lint`)                      |
-| `bun run typecheck`    | `typecheck` en todos los paquetes            |
-| `bun run all:apps <s>` | corre el script `<s>` en todas las apps      |
-| `bun run all:libs <s>` | corre el script `<s>` en todas las libs      |
-| `bun run filter <pkg> <s>` | corre `<s>` en un workspace concreto     |
-| `bun run dev:all`      | arranca todas las apps en paralelo           |
-| `bun run watch:libs`   | arranca todas las libs en watch (paralelo)   |
-| `bun run docker:up`    | levanta la infra local (postgres/redis)      |
-| `bun run docker:down`  | baja la infra local                          |
+`mise tasks` lista todo con su descripción. Las que llevan `<pkg>` aceptan el
+nombre corto (`api`, `modules-identity`) o el completo (`@template/api`); sin
+argumento corren en todo el monorepo.
 
-Para un paquete concreto: `mise run test api` o `bun run --filter '@template/api' test`.
+| Tarea                            | Acción                                             |
+| -------------------------------- | -------------------------------------------------- |
+| `mise run setup`                 | `bun install` + activa los git hooks               |
+| `mise run dev <pkg>`             | arranca un paquete en watch                        |
+| `mise run dev:all`               | arranca todas las apps en paralelo                 |
+| `mise run dev:libs`              | arranca todas las libs en watch                    |
+| `mise run start <pkg>`           | arranca un paquete sin watch                       |
+| `mise run build [pkg]`           | build a `dist/` con `tsc`                          |
+| `mise run clean`                 | borra `dist/` y `*.tsbuildinfo`                    |
+| `mise run typecheck [pkg]`       | `tsc --noEmit`                                     |
+| `mise run test [pkg]`            | tests unitarios (sin DB)                           |
+| `mise run test:watch <pkg>`      | tests de un paquete en watch                       |
+| `mise run test:cov <pkg>`        | tests de un paquete con coverage                   |
+| `mise run test:e2e [pkg]`        | tests e2e de una app (necesita DB)                 |
+| `mise run check`                 | lint + format en verificación (no escribe)         |
+| `mise run fix`                   | corrige lint + format                              |
+| `mise run lint` / `format`       | solo lint / solo format                            |
+| `mise run audit`                 | vulnerabilidades de las dependencias               |
+| `mise run ci`                    | lo mismo que corre CI, en local                    |
+| `mise run migration:generate <N>`| genera una migración diffeando entidades vs DB     |
+| `mise run migration:create <N>`  | crea una migración vacía                           |
+| `mise run migration:run`         | aplica las migraciones pendientes                  |
+| `mise run migration:revert`      | deshace la última migración                        |
+| `mise run docker:up` / `:down`   | levanta / baja la infra local                      |
+| `mise run new:app` / `new:lib`   | crea un paquete desde `templates/`                 |
+| `mise run env:*`                 | gestión del `.env` compartido                      |
+| `mise run dev:clean*`            | limpieza de `node_modules`, locks y caches         |
+
+Las migraciones escriben en `pg/` por defecto; con `--driver mysql` van a
+`mysql/`.
+
+Detrás de cada tarea hay un script de `package.json`, que es lo que
+`bun run --filter` necesita para el grafo de workspaces. Se pueden seguir
+llamando a mano (`bun run --filter '@template/api' dev`), pero la interfaz
+recomendada es mise.
 
 ## Crear una app o lib
 
 ```sh
-scripts/create-package.sh app <nombre> "<descripción>"
-scripts/create-package.sh lib <nombre>
-bun install
+mise run new:app <nombre> "<descripción>"
+mise run new:lib <nombre>
 ```
+
+La tarea corre `bun install` por ti. Falta a mano: agregar la dependencia
+`"@template/<nombre>": "workspace:*"` en el paquete que lo consuma.
 
 ## Convenciones de imports
 
@@ -100,12 +126,15 @@ bun install
 - **Carga de `.env`**: la app carga el `.env` compartido por sí sola
   (`@template/configs-envs/load-env`), sin depender de mise ni del cwd. mise
   sigue siendo útil para fijar versiones y gestionar `.env`, pero es opcional.
+- **Git hooks**: el `pre-commit` vive en `.githooks/` (versionado) y solo llama
+  a `mise run check:staged`. `git config core.hooksPath` no viaja con el clone,
+  así que hay que correr `mise run setup` (o `mise run hooks`) una vez.
 - **HTTPS opcional**: la app arranca en HTTP por defecto. Si existen
   `key.pem`/`cert.pem` en `configs-envs/src/certs/` levanta en HTTPS; puedes
   forzar HTTP con `HTTPS_ENABLED=false`.
 - **Entidades TypeORM**: las relaciones usan el tipo `Relation<>` de TypeORM
   para evitar el TDZ por dependencias circulares bajo ESM/Bun.
 - **Tests con `bun test`**: los tests corren con el runner nativo de Bun
-  directamente. Unitarios: `bun run --filter '@template/api' test` (mockean los
-  repositorios, no requieren base de datos). E2E: `bun run --filter
-  '@template/api' test:e2e` (requiere una base de datos activa).
+  directamente. Unitarios: `mise run test api` (mockean los repositorios, no
+  requieren base de datos). E2E: `mise run test:e2e api` (requiere una base de
+  datos activa).

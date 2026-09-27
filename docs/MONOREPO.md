@@ -56,9 +56,9 @@ nestjs/
 | Runtime y package manager | Bun | Ejecuta TypeScript directo, instala dependencias y gestiona workspaces. |
 | Workspaces | Bun workspaces | Paquetes bajo `packages/*/**`. |
 | Versiones compartidas | `catalog:` | Centraliza versiones en el `package.json` raíz. |
-| Versiones de herramientas | mise | Fija Bun/Biome y expone tareas como `env:create`. |
+| Versiones de herramientas | mise | Fija la versión de Bun y es el entry point de todas las tareas (`mise tasks`). |
 | Lint y formato | Biome | Reemplaza ESLint + Prettier con una sola herramienta. |
-| Hooks Git | husky | Ejecuta `biome check` en pre-commit. |
+| Hooks Git | `.githooks/` + `core.hooksPath` | `pre-commit` llama a `mise run check:staged`. Se activa con `mise run setup`. |
 | Framework | NestJS | Base de las aplicaciones. |
 | ORM | TypeORM | Datasources, módulo y migraciones en `@template/configs-database`. |
 | Tests | `bun test` | Runner nativo de Bun; no hay Jest en el repo. |
@@ -83,36 +83,39 @@ nestjs/
 - Las apps consumen libs con dependencias `workspace:*` y nombres `@template/<pkg>`.
 - Las libs exponen código mediante `exports`, por ejemplo `"./*": "./src/*.ts"`.
 
-## Scripts raíz
+## Tareas
 
-| Script | Uso |
+El entry point del repo es mise: `mise tasks` lista todo con su descripción.
+La tabla completa está en el [README](../README.md#tareas).
+
+Las tareas con `[pkg]` corren en todo el monorepo si no les pasas argumento, y
+en un paquete si se lo pasas, con nombre corto o completo:
+
+| Tarea | Uso |
 | --- | --- |
-| `bun run biome:check` | Revisa formato y lint del repo. |
-| `bun run biome:fix` | Aplica fixes seguros de Biome. |
-| `bun run biome:format` | Formatea archivos. |
-| `bun run biome:lint` | Ejecuta solo lint. |
-| `bun run all:apps <script>` | Ejecuta un script en todas las apps (`packages/apps/*`). |
-| `bun run all:libs <script>` | Ejecuta un script en todas las libs (`packages/libs/*`). |
-| `bun run filter <pkg> <script>` | Ejecuta un script en un workspace concreto (`bun run --filter`). |
-| `bun run typecheck` | `tsc --noEmit` en todos los paquetes. |
-| `bun run test` | Corre los tests de todos los paquetes que tengan script `test`. |
-| `bun run dev:all` | Arranca todas las apps en paralelo (`dev`). |
-| `bun run docker:up` | Levanta servicios locales. |
-| `bun run docker:down` | Detiene servicios locales. |
-| `bun run watch:libs` | Observa cambios en libs cuando el flujo lo requiera. |
-| `bun run prepare` | Instala/configura husky. |
+| `mise run check` / `fix` / `lint` / `format` | Biome: verificar, corregir, solo lint, solo format. |
+| `mise run typecheck [pkg]` | `tsc --noEmit`. |
+| `mise run test [pkg]` | Tests de los paquetes que tengan script `test`. |
+| `mise run build [pkg]` | Build a `dist/` con `tsc`. |
+| `mise run dev <pkg>` / `dev:all` / `dev:libs` | Watch de un paquete, de todas las apps, o de todas las libs. |
+| `mise run docker:up` / `docker:down` | Servicios locales. |
+| `mise run migration:*` | TypeORM CLI (ver [DATABASE-NOTES](DATABASE-NOTES.md)). |
+| `mise run new:app` / `new:lib` | Genera un paquete desde `templates/`. |
+| `mise run ci` | Reproduce en local lo que corre CI. |
 
-> Para ejecutar un script en un paquete concreto usa el filtro de Bun o una tarea de mise:
-> `bun run --filter '@template/api' dev` o `mise run dev api`.
+> Detrás de cada tarea hay un script de `package.json`: eso es lo que
+> `bun run --filter` necesita para resolver el grafo de workspaces. Se pueden
+> llamar a mano (`bun run --filter '@template/api' dev`), pero la interfaz
+> recomendada es mise.
 
 ## Quick start de desarrollo
 
 ```bash
-mise install
-bun install
+mise install            # instala la versión de bun de .mise.toml
+mise run setup          # bun install + activa los git hooks de .githooks/
 mise run env:create
-bun run docker:up
-mise run dev api        # o: bun run --filter '@template/api' dev
+mise run docker:up
+mise run dev api
 ```
 
 > Este template asume que las versiones de herramientas están fijadas con `.mise.toml`. Si clonas el template para otro proyecto, primero renombra globalmente el scope `@template/`.
@@ -122,28 +125,28 @@ mise run dev api        # o: bun run --filter '@template/api' dev
 Usa las tareas de **mise** (que envuelven el filtro de Bun) o `bun run --filter` directamente. Ya no existe un `app-runner` propio.
 
 ```bash
-# App NestJS principal (mise)
+# App NestJS principal
 mise run dev api
 mise run test api
+mise run test:e2e api
 mise run build api
 
-# Equivalente con el filtro de Bun
+# Lib compartida (mismo formato, nombre corto del paquete)
+mise run typecheck shared
+
+# Todo el monorepo: sin argumento
+mise run typecheck
+mise run test
+
+# Equivalente con el filtro de Bun, si lo necesitas
 bun run --filter '@template/api' dev
-bun run --filter '@template/api' test
-bun run --filter '@template/api' test:e2e
-
-# Lib compartida
-bun run --filter '@template/shared' typecheck
-
-# Todas las apps / libs a la vez
-bun run all:apps typecheck
-bun run all:libs typecheck
 ```
 
 Reglas prácticas:
 
-- Filtra por el nombre del paquete (`@template/<pkg>`), no por su ruta.
-- Usa `all:apps` / `all:libs` para correr un script en todos los paquetes de un tipo.
+- A mise dale el nombre corto (`api`, `shared`); si llamas a `bun run --filter`
+  a mano, filtra por el nombre del paquete (`@template/<pkg>`), no por su ruta.
+- Omite el argumento para correr en todo el monorepo.
 - Las apps pueden tener runtime y tests e2e.
 - Las libs deben mantenerse reutilizables y sin lógica de arranque propia.
 
@@ -178,15 +181,16 @@ scripts/create-package.sh <app|lib> <name>
 Ejemplos:
 
 ```bash
-scripts/create-package.sh app admin
-scripts/create-package.sh lib reports
+mise run new:app admin "API de administración"
+mise run new:lib reports
 ```
 
-El script copia los archivos desde `templates/`, reemplaza placeholders como `[APP_NAME]`, `[APP_DESCRIPTION]` o `[LIB_NAME]`, y crea un stub inicial en `src/`.
+La tarea envuelve `scripts/create-package.sh`, que copia los archivos desde `templates/`, reemplaza placeholders como `[APP_NAME]`, `[APP_DESCRIPTION]` o `[LIB_NAME]`, y crea un stub inicial en `src/`. Después la tarea corre `bun install`.
 
 Después de crear el paquete:
 
 1. Revisa el `package.json` generado.
 2. Agrega dependencias internas con `workspace:*` si consume otras libs.
 3. Usa `catalog:` para dependencias externas compartidas.
-4. Ejecuta el script correspondiente con `mise run <task> <pkg>` o `bun run --filter '@template/<pkg>' <script>`.
+4. Agrega al `package.json` generado los scripts que quieras poder correr: las plantillas solo traen `test`, así que un paquete nuevo no responde a `mise run typecheck <pkg>` ni a `build` hasta que los agregues.
+5. Ejecuta la tarea correspondiente con `mise run <task> <pkg>`.

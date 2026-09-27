@@ -26,22 +26,24 @@ no puede autenticarse contra él.
 
 Los scripts viven en el `package.json` de la app, porque el CLI de TypeORM
 necesita la datasource **y** las entidades, y las entidades son de la app:
-`src/config/typeorm.config.ts` las lista de forma explícita.
+`src/config/typeorm.config.ts` las lista de forma explícita. Las tareas de mise
+los envuelven y arman la ruta de destino por ti.
 
 ```bash
 # primera vez, o después de traer migraciones nuevas
-bun run --filter '@template/api' migration:run
+mise run migration:run
 
 # generar una migración a partir del diff contra las entidades (requiere DB viva)
-bun run --filter '@template/api' migration:generate ../../libs/configs/database/src/migrations/pg/<Nombre>
+mise run migration:generate <Nombre>
 
 # crear una migración vacía, para SQL a mano (no necesita DB)
-bun run --filter '@template/api' migration:create ../../libs/configs/database/src/migrations/pg/<Nombre>
+mise run migration:create <Nombre>
 
-bun run --filter '@template/api' migration:revert
+mise run migration:revert
 ```
 
-La ruta es relativa a `packages/apps/api`, que es donde corre el script.
+El destino es `packages/libs/configs/database/src/migrations/pg/` por defecto.
+Con `--driver mysql` va a `mysql/`.
 
 Con `POSTGRES_RUN_MIGRATIONS=true` en el `.env`, las migraciones pendientes
 corren solas al arrancar la app.

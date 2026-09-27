@@ -1,40 +1,279 @@
 # ===========================================
 # NESTJS MONOREPO TEMPLATE - MISE CONFIG
 # ===========================================
+#
+# mise es el unico entry point del repo: `mise tasks` lista todo lo que se
+# puede correr y para que sirve. Los scripts de package.json siguen siendo la
+# implementacion (bun --filter los necesita para el grafo de workspaces); las
+# tasks de aqui solo delegan y documentan.
+#
+# Nombre de paquete: se acepta el sufijo corto (`api`, `modules-identity`) o el
+# nombre completo (`@template/api`). Sin argumento, la task corre en todo el
+# monorepo.
 
 [tools]
 bun = "1.4.2"
-biome = "2.5.14"
 
 [env]
 PROJECT_NAME = "nestjs-monorepo-template"
 PROJECT_ROOT = "{{config_root}}"
 # Directorio con los .env compartidos (lib configs-envs).
 ENV_DIR = "{{config_root}}/packages/libs/configs/envs"
+# Donde viven las migraciones de TypeORM, relativo a packages/apps/api.
+MIGRATIONS_DIR = "../../libs/configs/database/src/migrations"
 
 # ===========================================
-# CORRER APPS / LIBS (reemplaza app-runner.ts)
+# SETUP
+# ===========================================
+
+[tasks.setup]
+description = "Setup inicial: dependencias + git hooks (correr al clonar)"
+run = '''
+set -e
+bun install
+git config core.hooksPath .githooks
+echo "Listo. Hooks de git apuntando a .githooks/"
+'''
+
+[tasks.hooks]
+description = "Activar los git hooks versionados en .githooks/"
+run = '''
+git config core.hooksPath .githooks
+echo "core.hooksPath = .githooks"
+'''
+
+# ===========================================
+# PAQUETES NUEVOS
+# ===========================================
+
+[tasks."new:app"]
+description = "Crea una app desde templates/ y corre bun install: mise run new:app billing \"API de facturacion\""
+usage = '''
+arg "<nombre>" help="Nombre de carpeta y sufijo del paquete: billing -> @template/billing"
+arg "[descripcion]" help="Descripcion para el package.json generado"
+'''
+run = '''
+set -e
+cd "$PROJECT_ROOT"
+scripts/create-package.sh app "$usage_nombre" "${usage_descripcion:-}"
+bun install
+echo "Falta a mano: agregar la dependencia workspace:* de @template/$usage_nombre en el paquete que lo consuma."
+'''
+
+[tasks."new:lib"]
+description = "Crea una lib desde templates/ y corre bun install: mise run new:lib billing-core"
+usage = '''
+arg "<nombre>" help="Nombre de carpeta y sufijo del paquete: billing-core -> @template/billing-core"
+'''
+run = '''
+set -e
+cd "$PROJECT_ROOT"
+scripts/create-package.sh lib "$usage_nombre"
+bun install
+echo "Falta a mano: agregar la dependencia workspace:* de @template/$usage_nombre en el paquete que lo consuma."
+'''
+
+# ===========================================
+# CORRER APPS / LIBS
 # ===========================================
 
 [tasks.dev]
-description = "Corre una app en watch (mise run dev <app>)"
-run = "bun run --filter './packages/apps/{{arg(name='app')}}' dev"
+description = "Corre una app en watch: mise run dev api"
+usage = '''
+arg "<pkg>" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api)"
+'''
+run = '''
+PKG="$usage_pkg"
+case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+bun run --filter "$PKG" dev
+'''
+
+[tasks."dev:all"]
+description = "Corre todas las apps en watch, en paralelo"
+run = "bun run dev:all"
+
+[tasks."dev:libs"]
+description = "Watch de todas las libs, en paralelo"
+run = "bun run watch:libs"
 
 [tasks.start]
-description = "Arranca una app (mise run start <app>)"
-run = "bun run --filter './packages/apps/{{arg(name='app')}}' start"
-
-[tasks.test]
-description = "Tests de una app (mise run test <app>)"
-run = "bun run --filter './packages/apps/{{arg(name='app')}}' test"
+description = "Arranca una app sin watch: mise run start api"
+usage = '''
+arg "<pkg>" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api)"
+'''
+run = '''
+PKG="$usage_pkg"
+case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+bun run --filter "$PKG" start
+'''
 
 [tasks.build]
-description = "Build de un paquete (mise run build <app-o-lib>)"
-run = "bun run --filter '{{arg(name='pkg')}}' build"
+description = "Build a dist/ con tsc. Sin argumento: todos los paquetes que tengan build"
+usage = '''
+arg "[pkg]" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api). Vacio = todo el monorepo"
+'''
+run = '''
+PKG="${usage_pkg:-}"
+if [ -z "$PKG" ]; then
+  bun run --filter './packages/*/**' build
+else
+  case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+  bun run --filter "$PKG" build
+fi
+'''
+
+[tasks.clean]
+description = "Borra dist/ y *.tsbuildinfo de todos los paquetes"
+run = "bun run --filter './packages/*/**' clean"
+
+# ===========================================
+# CALIDAD: TYPES, TESTS, LINT
+# ===========================================
 
 [tasks.typecheck]
-description = "Typecheck de todos los paquetes"
-run = "bun run --filter '*' typecheck"
+description = "tsc --noEmit. Sin argumento: todo el monorepo"
+usage = '''
+arg "[pkg]" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api). Vacio = todo el monorepo"
+'''
+run = '''
+PKG="${usage_pkg:-}"
+if [ -z "$PKG" ]; then
+  bun run typecheck
+else
+  case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+  bun run --filter "$PKG" typecheck
+fi
+'''
+
+[tasks.test]
+description = "Tests unitarios con bun test, sin DB. Sin argumento: todo el monorepo"
+usage = '''
+arg "[pkg]" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api). Vacio = todo el monorepo"
+'''
+run = '''
+PKG="${usage_pkg:-}"
+if [ -z "$PKG" ]; then
+  bun run test
+else
+  case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+  bun run --filter "$PKG" test
+fi
+'''
+
+[tasks."test:watch"]
+description = "Tests de un paquete en watch: mise run test:watch api"
+usage = '''
+arg "<pkg>" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api)"
+'''
+run = '''
+PKG="$usage_pkg"
+case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+bun run --filter "$PKG" test:watch
+'''
+
+[tasks."test:cov"]
+description = "Tests de un paquete con coverage: mise run test:cov api"
+usage = '''
+arg "<pkg>" help="Paquete: nombre corto (api, modules-identity) o completo (@template/api)"
+'''
+run = '''
+PKG="$usage_pkg"
+case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+bun run --filter "$PKG" test:cov
+'''
+
+[tasks."test:e2e"]
+description = "Tests e2e de una app (default api). Necesita la DB arriba: mise run docker:up"
+usage = '''
+arg "[pkg]" default="api" help="App a probar; por defecto api"
+'''
+run = '''
+PKG="$usage_pkg"
+case "$PKG" in @template/*) ;; *) PKG="@template/$PKG" ;; esac
+bun run --filter "$PKG" test:e2e
+'''
+
+[tasks.check]
+description = "Lint + format en modo verificacion (biome check, no escribe)"
+run = "bun run biome:check"
+
+[tasks.fix]
+description = "Arregla lint + format en el sitio (biome check --write)"
+run = "bun run biome:fix"
+
+[tasks.lint]
+description = "Solo lint, sin format (biome lint)"
+run = "bun run biome:lint"
+
+[tasks.format]
+description = "Solo format, escribiendo (biome format --write)"
+run = "bun run biome:format"
+
+[tasks."check:staged"]
+description = "biome check sobre lo que esta en el index de git (lo usa el pre-commit)"
+run = "bunx biome check --staged --no-errors-on-unmatched"
+
+[tasks.audit]
+description = "Auditoria de vulnerabilidades de las dependencias (bun audit)"
+run = "bun audit"
+
+[tasks.ci]
+description = "Lo mismo que corre CI: typecheck + check + test + audit"
+run = '''
+set -e
+bun run typecheck
+bun run biome:check
+bun run test
+bun audit
+'''
+
+# ===========================================
+# MIGRACIONES (TypeORM CLI via @template/api)
+# ===========================================
+# El CLI necesita la datasource de la app, por eso todo pasa por
+# @template/api. --driver elige la carpeta destino: pg (default) o mysql.
+
+[tasks."migration:generate"]
+description = "Genera una migracion diffeando entidades vs DB: mise run migration:generate AddUsers [--driver mysql]"
+usage = '''
+arg "<nombre>" help="Nombre de la migracion en PascalCase, p. ej. AddUsers"
+flag "--driver <driver>" default="pg" help="Carpeta destino: pg o mysql"
+'''
+run = '''
+bun run --filter '@template/api' migration:generate \
+  "$MIGRATIONS_DIR/$usage_driver/$usage_nombre"
+'''
+
+[tasks."migration:create"]
+description = "Crea una migracion vacia: mise run migration:create AddUsers [--driver mysql]"
+usage = '''
+arg "<nombre>" help="Nombre de la migracion en PascalCase, p. ej. AddUsers"
+flag "--driver <driver>" default="pg" help="Carpeta destino: pg o mysql"
+'''
+run = '''
+bun run --filter '@template/api' migration:create \
+  "$MIGRATIONS_DIR/$usage_driver/$usage_nombre"
+'''
+
+[tasks."migration:run"]
+description = "Aplica las migraciones pendientes. Necesita la DB arriba"
+run = "bun run --filter '@template/api' migration:run"
+
+[tasks."migration:revert"]
+description = "Deshace la ultima migracion aplicada"
+run = "bun run --filter '@template/api' migration:revert"
+
+# ===========================================
+# DOCKER
+# ===========================================
+
+[tasks."docker:up"]
+description = "Levanta postgres (mysql/kafka necesitan --profile en docker compose)"
+run = "bun run docker:up"
+
+[tasks."docker:down"]
+description = "Baja los contenedores"
+run = "bun run docker:down"
 
 # ===========================================
 # GESTION DE .ENV
@@ -147,3 +386,4 @@ mise run dev:clean
 bun install
 echo "Reset completo terminado"
 '''
+
