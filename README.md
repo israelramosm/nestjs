@@ -94,8 +94,9 @@ bun install
 ## Notas
 
 - **Runtime Bun**: dev y producción corren directo con Bun (`bun --watch
-  src/main.ts` / `bun src/main.ts`), sin paso de build. `nest build` sigue
-  disponible para generar `dist/`, pero no es necesario para arrancar.
+  src/main.ts` / `bun src/main.ts`), sin paso de build. El script `build`
+  (`tsc -p tsconfig.build.json`) sigue disponible para generar `dist/`, pero no
+  es necesario para arrancar.
 - **Carga de `.env`**: la app carga el `.env` compartido por sí sola
   (`@template/configs-envs/load-env`), sin depender de mise ni del cwd. mise
   sigue siendo útil para fijar versiones y gestionar `.env`, pero es opcional.

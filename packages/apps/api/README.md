@@ -14,7 +14,7 @@ Ejecuta con `mise run <task> api` o `bun run --filter '@template/api' <script>`.
 | `bun run --filter '@template/api' start:debug`         | —                    | watch + inspector (`bun --inspect --watch`)       |
 | `bun run --filter '@template/api' start:prod`          | —                    | arranca en producción (`NODE_ENV=production bun`) |
 | `bun run --filter '@template/api' dev`                 | `mise run dev api`   | arranca directo con Bun (`bun --watch`)           |
-| `bun run --filter '@template/api' build`               | `mise run build api` | build (`nest build`)                              |
+| `bun run --filter '@template/api' build`               | `mise run build api` | build a `dist/` (`tsc -p tsconfig.build.json`)     |
 | `bun run --filter '@template/api' clean`               | —                    | limpia `dist` y `*.tsbuildinfo`                   |
 | `bun run --filter '@template/api' typecheck`           | —                    | `tsc --noEmit`                                    |
 | `bun run --filter '@template/api' test`                | `mise run test api`  | tests unitarios (`bun test`)                      |
