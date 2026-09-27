@@ -1,5 +1,6 @@
 import '@template/configs-envs/load-env';
 import { DataSourceOptions } from 'typeorm';
+import { pgMigrations } from '#src/database/migrations/pg/index';
 
 const pgdbConfig: DataSourceOptions = {
 	name: 'default',
@@ -10,8 +11,7 @@ const pgdbConfig: DataSourceOptions = {
 	password: process.env.POSTGRES_PASSWORD,
 	database: process.env.POSTGRES_DATABASE,
 	synchronize: process.env.POSTGRES_SYNCHRONIZE === 'true',
-	migrations: [`${__dirname}/../database/migrations/pg/**/*{.ts,.js}`],
-	entities: [`${__dirname}/../modules/**/*.entity{.ts,.js}`],
+	migrations: pgMigrations,
 	migrationsRun: process.env.POSTGRES_RUN_MIGRATIONS === 'true',
 	// logging: process.env.POSTGRES_LOGGING,
 	ssl: false,

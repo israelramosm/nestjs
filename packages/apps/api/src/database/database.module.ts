@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import pgdbConfig from '#src/config/pgdb.config';
 // import mysqldbConfig from '#src/config/mysqldb.config';
 
@@ -9,14 +9,15 @@ import pgdbConfig from '#src/config/pgdb.config';
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
-			useFactory: async (): Promise<TypeOrmModuleAsyncOptions> => ({
+			useFactory: async (): Promise<TypeOrmModuleOptions> => ({
 				...pgdbConfig,
+				autoLoadEntities: true,
 			}),
 		}),
 		// TypeOrmModule.forRootAsync({
 		//   imports: [ConfigModule],
 		//   inject: [ConfigService],
-		//   useFactory: async (): Promise<TypeOrmModuleAsyncOptions> => ({
+		//   useFactory: async (): Promise<TypeOrmModuleOptions> => ({
 		//     ...mysqldbConfig,
 		//   }),
 		// }),
