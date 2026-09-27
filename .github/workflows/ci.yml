@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Instala bun y biome con las versiones de .mise.toml
+      - uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint + format
+        run: bun run biome:check
+
+      - name: Tests
+        run: bun run --filter '@template/api' test
+
+      - name: Audit
+        run: bun audit
