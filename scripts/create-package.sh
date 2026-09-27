@@ -38,6 +38,7 @@ if [[ "$TYPE" == "app" ]]; then
 		-e "s/\[APP_DESCRIPTION\]/${DESCRIPTION:-$NAME app}/g" \
 		"$TEMPLATES_DIR/package.app.template.json" > "$DEST/package.json"
 	cp "$TEMPLATES_DIR/tsconfig.app.template.json" "$DEST/tsconfig.json"
+	cp "$TEMPLATES_DIR/tsconfig.build.app.template.json" "$DEST/tsconfig.build.json"
 	cat > "$DEST/src/main.ts" <<'EOF'
 export function main(): void {
 	console.log('hello from app');
@@ -55,4 +56,3 @@ EOF
 fi
 
 echo "Creado $TYPE '@template/$NAME' en $DEST"
-echo "Recuerda correr: bun install"

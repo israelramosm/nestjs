@@ -9,8 +9,10 @@ listo para crecer con nuevas apps y libs.
 - **Bun** (workspaces + `catalog:` para versiones compartidas) como package
   manager y runtime.
 - **Biome** para lint + format (reemplaza ESLint + Prettier).
-- **mise** para fijar versiones de herramientas y gestionar `.env`.
-- **husky** para hooks de git (`biome check` en pre-commit).
+- **mise** como entry point de todas las tareas del repo, y para fijar la
+  versión de Bun y gestionar el `.env`.
+- **Git hooks versionados** en `.githooks/` (`pre-commit` → `mise run
+  check:staged`), sin dependencias.
 - **TypeORM** (Postgres por defecto, MySQL bajo profile).
 - **`bun test`** para tests unitarios y e2e de la app `api`.
 - **docker-compose** para infra local (postgres, mysql, redis, kafka).
@@ -31,6 +33,8 @@ packages/
 templates/                   # plantillas para crear apps/libs
 scripts/                     # create-package.sh (generador de paquetes)
 docs/                        # DATABASE-NOTES.md, MONOREPO.md, NAMING-CONVENTIONS.md
+.githooks/                   # pre-commit (activar con: mise run setup)
+.mise.toml                   # versión de Bun y todas las tareas del repo
 ```
 
 Ver [`docs/MONOREPO.md`](docs/MONOREPO.md) y

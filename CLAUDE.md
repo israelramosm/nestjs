@@ -62,9 +62,12 @@ paquetes nuevos con esa misma convención.
   `.ts` explícito el typecheck falla con TS2307.
 - `mise run new:app`/`new:lib` sí corren `bun install`, pero **no** agregan la
   dependencia `workspace:*` en el consumidor — ese paso sigue siendo manual.
-- **Las plantillas de `templates/` solo traen el script `test`** (y es un `echo`
-  vacío). Un paquete recién creado no responde a `mise run typecheck <pkg>` ni
-  a `build` hasta que le agregues esos scripts a mano en su `package.json`.
+- **Las plantillas no traen script `test`, a propósito**: `bun test` sale con
+  código 1 si no encuentra archivos de test, así que un paquete nuevo con ese
+  script rompería `mise run test` y el CI del repo. Agrégalo
+  (`"test": "bun test src"`) al escribir el primer test. Hasta entonces
+  `mise run test <pkg>` falla con "Script not found", pero `mise run test` a
+  secas ignora el paquete.
 - **Los git hooks no se activan al clonar**: `git config core.hooksPath` es
   config local, no viaja con el repo. Hay que correr `mise run setup` (o
   `mise run hooks`) una vez. El `pre-commit` de `.githooks/` se salta a sí mismo

@@ -6,13 +6,15 @@ Este repositorio es un **template genérico** para aplicaciones NestJS organizad
 
 ```text
 nestjs/
-├── package.json              # workspaces, catalog y scripts raíz
+├── package.json              # workspaces, catalog y scripts que las tareas envuelven
 ├── bunfig.toml               # configuración de Bun
-├── .mise.toml                # versiones de herramientas y tareas de entorno
+├── .mise.toml                # versión de Bun y todas las tareas del repo
 ├── tsconfig.base.json        # configuración TypeScript compartida
 ├── tsconfig.json             # referencia/base para el IDE
 ├── biome.json                # lint y format con Biome
 ├── docker-compose.yml        # servicios locales: postgres, mysql, redis, kafka
+├── .githooks/
+│   └── pre-commit            # llama a `mise run check:staged`
 ├── .github/
 │   └── workflows/
 │       └── ci.yml            # typecheck, biome, tests y audit
@@ -21,6 +23,7 @@ nestjs/
 │   ├── package.app.template.json
 │   ├── package.lib.template.json
 │   ├── tsconfig.app.template.json
+│   ├── tsconfig.build.app.template.json
 │   └── tsconfig.lib.template.json
 ├── scripts/
 │   └── create-package.sh
@@ -172,10 +175,11 @@ import { localHelper } from '#src/local-helper';
 
 ## Crear un paquete nuevo
 
-Usa el generador del repo:
+Usa las tareas del repo:
 
 ```bash
-scripts/create-package.sh <app|lib> <name>
+mise run new:app <name> "<descripción>"
+mise run new:lib <name>
 ```
 
 Ejemplos:
@@ -192,5 +196,5 @@ Después de crear el paquete:
 1. Revisa el `package.json` generado.
 2. Agrega dependencias internas con `workspace:*` si consume otras libs.
 3. Usa `catalog:` para dependencias externas compartidas.
-4. Agrega al `package.json` generado los scripts que quieras poder correr: las plantillas solo traen `test`, así que un paquete nuevo no responde a `mise run typecheck <pkg>` ni a `build` hasta que los agregues.
+4. Agrega `"test": "bun test src"` cuando escribas el primer test: las plantillas no lo traen porque `bun test` falla si no encuentra archivos de test (ver [`templates/README.md`](../templates/README.md)).
 5. Ejecuta la tarea correspondiente con `mise run <task> <pkg>`.
