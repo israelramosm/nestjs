@@ -30,9 +30,10 @@
 		"test:watch": "bun test --watch src",
 		"test:cov": "bun test --coverage src",
 		"test:e2e": "bun test e2e",
-		"typeorm:cli": "bun ../../../node_modules/typeorm/cli.js -d src/config/typeorm.config.ts",
+		"typeorm": "bun ../../../node_modules/typeorm/cli.js",
+		"typeorm:cli": "bun run typeorm -d src/config/typeorm.config.ts",
 		"migration:generate": "bun run typeorm:cli migration:generate",
-		"migration:create": "bun run typeorm:cli migration:create",
+		"migration:create": "bun run typeorm migration:create",
 		"migration:run": "bun run typeorm:cli migration:run",
 		"migration:revert": "bun run typeorm:cli migration:revert"
 	},
