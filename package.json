@@ -63,6 +63,7 @@
 		"base": "bun run --filter '*'",
 		"dev:all": "bun run --filter './packages/apps/*/**' --parallel dev",
 		"typecheck": "bun run --filter '*' typecheck",
+		"test": "bun run --filter '*' test",
 		"docker:up": "docker compose up -d",
 		"docker:down": "docker compose down",
 		"watch:libs": "bun run --filter './packages/libs/**' --parallel dev",

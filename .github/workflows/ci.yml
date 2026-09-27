@@ -30,7 +30,7 @@ jobs:
         run: bun run biome:check
 
       - name: Tests
-        run: bun run --filter '@template/api' test
+        run: bun run test
 
       - name: Audit
         run: bun audit

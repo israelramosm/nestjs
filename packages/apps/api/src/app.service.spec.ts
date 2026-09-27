@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
 import type { HealthCheck } from '@template/utils/types';
-import { AppService } from './app.service';
+import { AppService } from '#src/app.service';
 
 describe('AppService', () => {
 	let appService: AppService;

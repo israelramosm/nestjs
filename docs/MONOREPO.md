@@ -41,6 +41,8 @@ nestjs/
         ├── configs/
         │   ├── database/
         │   └── envs/
+        ├── modules/
+        │   └── identity/
         ├── api/
         │   └── redis/
         ├── kafka/
@@ -70,6 +72,7 @@ nestjs/
 | Lib | Paquete | Uso |
 | --- | --- | --- |
 | Base de datos | `@template/configs-database` | Datasources de Postgres/MySQL, `DatabaseModule` y migraciones. |
+| Identidad | `@template/modules-identity` | Módulos NestJS de auth, users, profiles y passwords, con sus entidades. |
 | Envs y config | `@template/configs-envs` | `Environments`, esquemas Joi, carga de `.env`, certs. |
 | Utils | `@template/utils` | Tipos y mocks de providers genéricos. |
 | DTOs | `@template/dto` | DTOs compartidos (p. ej. paginación). |
@@ -96,6 +99,7 @@ nestjs/
 | `bun run all:libs <script>` | Ejecuta un script en todas las libs (`packages/libs/*`). |
 | `bun run filter <pkg> <script>` | Ejecuta un script en un workspace concreto (`bun run --filter`). |
 | `bun run typecheck` | `tsc --noEmit` en todos los paquetes. |
+| `bun run test` | Corre los tests de todos los paquetes que tengan script `test`. |
 | `bun run dev:all` | Arranca todas las apps en paralelo (`dev`). |
 | `bun run docker:up` | Levanta servicios locales. |
 | `bun run docker:down` | Detiene servicios locales. |
@@ -158,6 +162,7 @@ Reglas prácticas:
   con TS2307.
 - Bun ejecuta TypeScript directo, así que las libs se consumen por fuente y no
   hace falta build previo.
+- Sin rutas relativas: `style/noRestrictedImports` en `biome.json` las rechaza.
 
 Ejemplo:
 

@@ -77,12 +77,12 @@ Usa grupos cuando ayuden a preparar futuras extracciones:
 | `configs` | `@template/configs-*` | Configuración, variables de entorno, schemas, certificados. |
 | `modules` | `@template/modules-*` | Módulos NestJS extraídos para compartir entre apps. |
 
-Ejemplos futuros:
+Ejemplos:
 
 ```text
-packages/libs/configs/envs    ->  @template/configs-envs
-packages/libs/modules/auth    ->  @template/modules-auth
-packages/libs/modules/users   ->  @template/modules-users
+packages/libs/configs/envs        ->  @template/configs-envs
+packages/libs/configs/database    ->  @template/configs-database
+packages/libs/modules/identity    ->  @template/modules-identity
 ```
 
 ## Convenciones de imports
@@ -109,6 +109,11 @@ Esto depende del campo `imports` en el `package.json` del paquete:
 ```
 
 El mapeo agrega la extensión, así que el especificador va sin `.ts`.
+
+Las rutas relativas (`./x`, `../x`) están prohibidas: la regla
+`style/noRestrictedImports` de Biome las marca como error, así que no pasan el
+pre-commit ni el CI. Dentro del paquete va `#src/*`; entre paquetes, el nombre
+del workspace.
 
 ### Imports entre paquetes
 

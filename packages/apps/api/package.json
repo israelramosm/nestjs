@@ -47,6 +47,7 @@
 		"@nestjs/platform-express": "catalog:",
 		"@nestjs/typeorm": "catalog:",
 		"@template/configs-database": "workspace:*",
+		"@template/modules-identity": "workspace:*",
 		"@template/configs-envs": "workspace:*",
 		"@template/dto": "workspace:*",
 		"@template/interfaces": "workspace:*",

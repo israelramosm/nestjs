@@ -1,8 +1,8 @@
 import pgdbConfig from '@template/configs-database/pgdb.config';
+import { Password } from '@template/modules-identity/passwords/entities/password.entity';
+import { Profile } from '@template/modules-identity/profiles/entities/profile.entity';
+import { User } from '@template/modules-identity/users/entities/user.entity';
 import { DataSource } from 'typeorm';
-import { Password } from '#src/modules/passwords/entities/password.entity';
-import { Profile } from '#src/modules/profiles/entities/profile.entity';
-import { User } from '#src/modules/users/entities/user.entity';
 
 // import mysqldbConfig from '@template/configs-database/mysqldb.config';
 

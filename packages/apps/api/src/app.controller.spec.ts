@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { Test, type TestingModule } from '@nestjs/testing';
 import type { HealthCheck } from '@template/utils/types';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from '#src/app.controller';
+import { AppService } from '#src/app.service';
 
 describe('AppController', () => {
 	let appController: AppController;

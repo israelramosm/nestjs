@@ -3,10 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from '@template/api-redis/redis.module';
 import { DatabaseModule } from '@template/configs-database/database.module';
 import { ConfigSchemas } from '@template/configs-envs/config.schemas';
+import { AuthModule } from '@template/modules-identity/auth/auth.module';
+import { UsersModule } from '@template/modules-identity/users/users.module';
 import { AppController } from '#src/app.controller';
 import { AppService } from '#src/app.service';
-import { AuthModule } from '#src/modules/auth/auth.module';
-import { UsersModule } from '#src/modules/users/users.module';
 
 @Module({
 	imports: [

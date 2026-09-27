@@ -3,7 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { getHttpsOptions } from '@template/configs-envs/certs';
-import { AppModule } from './app.module';
+import { AppModule } from '#src/app.module';
 
 async function bootstrap() {
 	const httpsOptions = getHttpsOptions();

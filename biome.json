@@ -33,7 +33,18 @@
 				"noExplicitAny": "off"
 			},
 			"style": {
-				"useImportType": "off"
+				"useImportType": "off",
+				"noRestrictedImports": {
+					"level": "error",
+					"options": {
+						"patterns": [
+							{
+								"group": ["./**", "../**"],
+								"message": "Usa #src/* dentro del paquete y @template/<pkg> entre paquetes."
+							}
+						]
+					}
+				}
 			}
 		}
 	},

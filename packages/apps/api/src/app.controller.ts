@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
+import { Public } from '@template/modules-identity/common/decorators/public';
 import type { HealthCheck } from '@template/utils/types';
-import { AppService } from './app.service';
-import { Public } from './common/decorators/public';
+import { AppService } from '#src/app.service';
 
 @Controller()
 export class AppController {

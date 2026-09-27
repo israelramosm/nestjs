@@ -28,6 +28,7 @@
         "@template/dto": "workspace:*",
         "@template/interfaces": "workspace:*",
         "@template/kafka": "workspace:*",
+        "@template/modules-identity": "workspace:*",
         "@template/utils": "workspace:*",
         "bcrypt": "catalog:",
         "class-transformer": "catalog:",
@@ -111,6 +112,39 @@
         "@template/configs-envs": "workspace:*",
         "kafkajs": "catalog:",
         "rxjs": "catalog:",
+      },
+    },
+    "packages/libs/modules/identity": {
+      "name": "@template/modules-identity",
+      "version": "0.0.1",
+      "dependencies": {
+        "@nestjs/common": "catalog:",
+        "@nestjs/config": "catalog:",
+        "@nestjs/core": "catalog:",
+        "@nestjs/jwt": "catalog:",
+        "@nestjs/mapped-types": "catalog:",
+        "@nestjs/passport": "catalog:",
+        "@nestjs/typeorm": "catalog:",
+        "@template/configs-envs": "workspace:*",
+        "bcrypt": "catalog:",
+        "class-validator": "catalog:",
+        "express": "^5.0.0",
+        "passport": "catalog:",
+        "passport-jwt": "catalog:",
+        "passport-local": "catalog:",
+        "typeorm": "catalog:",
+        "uuid": "catalog:",
+      },
+      "devDependencies": {
+        "@nestjs/testing": "catalog:",
+        "@template/utils": "workspace:*",
+        "@types/bun": "catalog:",
+        "@types/express": "^5.0.0",
+        "@types/node": "catalog:",
+        "@types/passport-jwt": "catalog:",
+        "@types/passport-local": "catalog:",
+        "@types/uuid": "catalog:",
+        "typescript": "catalog:",
       },
     },
     "packages/libs/utils": {
@@ -249,6 +283,8 @@
     "@template/interfaces": ["@template/interfaces@workspace:packages/libs/interfaces"],
 
     "@template/kafka": ["@template/kafka@workspace:packages/libs/kafka"],
+
+    "@template/modules-identity": ["@template/modules-identity@workspace:packages/libs/modules/identity"],
 
     "@template/utils": ["@template/utils@workspace:packages/libs/utils"],
 

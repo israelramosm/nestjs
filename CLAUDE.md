@@ -18,7 +18,8 @@ Al clonar para un proyecto nuevo:
 mise install && bun install        # setup
 bun run docker:up                  # postgres siempre; mysql/kafka con --profile
 mise run dev api                   # equivalente: bun run --filter '@template/api' dev
-bun run --filter '@template/api' test        # unit (bun test, mockea repos, sin DB)
+bun run test                       # unit de todos los paquetes (bun test, sin DB)
+bun run --filter '@template/modules-identity' test   # solo auth/users/profiles
 bun run --filter '@template/api' test:e2e    # requiere DB activa
 bun run typecheck                  # tsc --noEmit en todos los paquetes
 bun run biome:check / biome:fix    # lint+format (reemplaza ESLint+Prettier)
@@ -31,8 +32,11 @@ falta para `dist/`.
 
 ## Arquitectura
 
-`packages/apps/api` es la única app de ejemplo (auth/users/profiles vía
-TypeORM+Passport). `packages/libs/**` son libs sin lógica de arranque
+`packages/apps/api` es la única app de ejemplo, y quedó chica: solo arranque,
+health check y la datasource del CLI de TypeORM. La identidad
+(auth/users/profiles/passwords vía TypeORM+Passport) vive en
+`@template/modules-identity`, y la config de base de datos en
+`@template/configs-database`. `packages/libs/**` son libs sin lógica de arranque
 consumidas via `@template/<pkg>` + `workspace:*` (ver
 `docs/NAMING-CONVENTIONS.md` para el mapeo carpeta→nombre de paquete, p. ej.
 `libs/configs/envs` → `@template/configs-envs`). Todo lo demás
