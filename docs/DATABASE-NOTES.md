@@ -1,83 +1,69 @@
-# PostgreSql
+# Base de datos y migraciones
 
-## Linux
+Toda la configuración de base de datos vive en `@template/configs-database`
+(`packages/libs/configs/database`): los datasources de Postgres y MySQL, el
+`DatabaseModule` que consume la app, y las migraciones de cada motor.
 
-### Download from registry 
+## Levantar los servicios
 
-```shell
-podman pull docker.io/library/postgres 
+Los contenedores los define `docker-compose.yml` en la raíz. Postgres y Redis
+arrancan por defecto; MySQL y Kafka están detrás de un profile.
+
+```bash
+bun run docker:up                      # postgres + redis
+docker compose --profile mysql up -d   # agrega mysql
+bun run docker:down
 ```
 
-### Check image 
-```shell
-podman images 
+Ojo con las credenciales: son **dos fuentes distintas**. La app lee el `.env`
+de `@template/configs-envs` (`packages/libs/configs/envs/.env`, lo crea
+`mise run env:create`). El compose no lo lee —no tiene `env_file` y no hay
+`.env` en la raíz—, así que usa sus propios defaults (`postgres`/`postgres`,
+base `app`). Si cambiás uno sin el otro, la app levanta el contenedor y después
+no puede autenticarse contra él.
+
+## Migraciones
+
+Los scripts viven en el `package.json` de la app, porque el CLI de TypeORM
+necesita la datasource **y** las entidades, y las entidades son de la app:
+`src/config/typeorm.config.ts` las lista de forma explícita.
+
+```bash
+# primera vez, o después de traer migraciones nuevas
+bun run --filter '@template/api' migration:run
+
+# generar una migración a partir del diff contra las entidades (requiere DB viva)
+bun run --filter '@template/api' migration:generate ../../libs/configs/database/src/migrations/pg/<Nombre>
+
+# crear una migración vacía, para SQL a mano (no necesita DB)
+bun run --filter '@template/api' migration:create ../../libs/configs/database/src/migrations/pg/<Nombre>
+
+bun run --filter '@template/api' migration:revert
 ```
 
-### Run the container 
+La ruta es relativa a `packages/apps/api`, que es donde corre el script.
 
-```shell
-podman run -dt --name service-db -e POSTGRES_PASSWORD=*** -v "/home/israel-ramos/podman-data/postgresql" -p 5432:5432 postgres
-```
+Con `POSTGRES_RUN_MIGRATIONS=true` en el `.env`, las migraciones pendientes
+corren solas al arrancar la app.
 
-## Windows
+## Dos cosas que muerden
 
-```shell
-podman pull docker.io/library/postrges
+- **El índice de migraciones se mantiene a mano.** Cada carpeta
+  (`migrations/pg`, `migrations/mysql`) tiene un `index.ts` que las importa y
+  las lista; el datasource lee esa lista, no el disco. Una migración que
+  generaste y no agregaste al índice no corre, y nada avisa.
+- **`migration:create` no pasa por la datasource.** Cuelga del script `typeorm`
+  en vez de `typeorm:cli`, porque ese subcomando rechaza el flag `-d`. Los otros
+  tres sí la necesitan.
 
-podman volume create pg_data
+## Entidades
 
-podman run -dt --name service-db -e POSTGRES_PASSWORD=*** -v "host/path:/mount/path" -p 5432:5432 postgres
-```
+El `DatabaseModule` usa `autoLoadEntities: true`, así que las entidades salen de
+los `TypeOrmModule.forFeature()` de cada módulo de Nest, no de un glob sobre el
+filesystem. El CLI no ve ese registro —solo existe dentro de Nest—, por eso
+`typeorm.config.ts` repite la lista a mano. Entidad nueva: va al `forFeature()`
+de su módulo y a esa lista.
 
-# MySQL
+## Referencia
 
-```shell
-podman run -dt -e MYSQL_ROOT_PASSWORD=<SenhaDoUsuárioRoot> \
--e MYSQL_USER=<NomeDeUsuário> -e MYSQL_DATABASE=<NomeDoBanco> \
---name <NomeDoContainer> -p 3306:3306 mysql:latest
-```
-
-# TypeORM CLI
-
-[TypeORM](https://orkhan.gitbook.io/typeorm/docs/using-cli)
-
-```typeorm:cli``` should already be configured on the ```package.json``` to run the migrations as scripts
-
-Use generate to create a migration on the folder, for some reason create does not worked as expected 
-
-* If its a new db run the migration command first
-
-```shell
-npm run migration:run
-```
-
-This will update all tables need it for the project
-
-* If you need to create a new migration run this command
-
-```shell
-npm run migration:generate src/database/migrations/pg/Init
-```
-
-* You can revert a migration with this command
-
-```shell
-npm run migration:revert
-```
-
-Make sure the migration table data on postagres have the migration files in the project.
-
-
-# Helpful git commands
-
-Run the following command to remove the file and rewrite the entire history with new commit hashes:
-
-```shell
-git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch <path-to-file>' --prune-empty --tag-name-filter cat -- --all
-```
-
-After this, you might need to force-push your changes using:
-
-```shell
-git push --force
-```
+- [TypeORM CLI](https://orkhan.gitbook.io/typeorm/docs/using-cli)

@@ -92,7 +92,7 @@ packages/libs/modules/users   ->  @template/modules-users
 Preferido:
 
 ```ts
-import { helper } from '#src/helper.ts';
+import { helper } from '#src/helper';
 ```
 
 Esto depende del campo `imports` en el `package.json` del paquete:
@@ -100,20 +100,23 @@ Esto depende del campo `imports` en el `package.json` del paquete:
 ```json
 {
   "imports": {
-    "#src/*": "./src/*"
+    "#src/*": {
+      "types": "./src/*.ts",
+      "default": "./src/*.ts"
+    }
   }
 }
 ```
 
-También se permite usar rutas basadas en `src/*` cuando el paquete configure `baseUrl`.
+El mapeo agrega la extensión, así que el especificador va sin `.ts`.
 
 ### Imports entre paquetes
 
 Usa siempre el nombre publicado del workspace:
 
 ```ts
-import { Environments } from '@template/configs-envs/Environments.ts';
-import { PaginationDto } from '@template/dto/pagination.dto.ts';
+import { Environments } from '@template/configs-envs/Environments';
+import { PaginationDto } from '@template/dto/pagination.dto';
 ```
 
 El paquete consumidor debe declarar la dependencia interna así:

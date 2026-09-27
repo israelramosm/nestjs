@@ -13,6 +13,9 @@ nestjs/
 ├── tsconfig.json             # referencia/base para el IDE
 ├── biome.json                # lint y format con Biome
 ├── docker-compose.yml        # servicios locales: postgres, mysql, redis, kafka
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # typecheck, biome, tests y audit
 ├── templates/
 │   ├── README.md
 │   ├── package.app.template.json
@@ -22,6 +25,7 @@ nestjs/
 ├── scripts/
 │   └── create-package.sh
 ├── docs/
+│   ├── DATABASE-NOTES.md
 │   ├── MONOREPO.md
 │   └── NAMING-CONVENTIONS.md
 └── packages/
@@ -32,10 +36,10 @@ nestjs/
     │       ├── resources/
     │       ├── package.json
     │       ├── tsconfig.json
-    │       ├── tsconfig.build.json
-    │       └── jest.config.json
+    │       └── tsconfig.build.json
     └── libs/
         ├── configs/
+        │   ├── database/
         │   └── envs/
         ├── api/
         │   └── redis/
@@ -56,14 +60,16 @@ nestjs/
 | Lint y formato | Biome | Reemplaza ESLint + Prettier con una sola herramienta. |
 | Hooks Git | husky | Ejecuta `biome check` en pre-commit. |
 | Framework | NestJS | Base de las aplicaciones. |
-| ORM | TypeORM | Configuración de base de datos dentro de cada app que la use. |
-| Tests | Jest | Tests unitarios/e2e de las apps. |
-| Infra local | docker-compose | Postgres por defecto; MySQL, Redis y Kafka con profiles cuando aplique. |
+| ORM | TypeORM | Datasources, módulo y migraciones en `@template/configs-database`. |
+| Tests | `bun test` | Runner nativo de Bun; no hay Jest en el repo. |
+| Infra local | docker-compose | Postgres y Redis por defecto; MySQL y Kafka con profiles. |
+| CI | GitHub Actions | `ci.yml`: typecheck, biome, tests de la api y `bun audit`. |
 
 ## Librerías incluidas
 
 | Lib | Paquete | Uso |
 | --- | --- | --- |
+| Base de datos | `@template/configs-database` | Datasources de Postgres/MySQL, `DatabaseModule` y migraciones. |
 | Envs y config | `@template/configs-envs` | `Environments`, esquemas Joi, carga de `.env`, certs. |
 | Utils | `@template/utils` | Tipos y mocks de providers genéricos. |
 | DTOs | `@template/dto` | DTOs compartidos (p. ej. paginación). |
@@ -74,7 +80,7 @@ nestjs/
 ## Apps vs libs
 
 - **Apps**: viven en `packages/apps/<name>`, son ejecutables y tienen scripts como `start`, `dev` o `start:dev`. Ejemplo: `@template/api`.
-- **Libs**: viven en `packages/libs/...`, no son ejecutables y exponen código compartido. Normalmente solo tienen `build`, `clean` y `typecheck`.
+- **Libs**: viven en `packages/libs/...`, no son ejecutables y exponen código compartido. Solo tienen `clean` y `typecheck`: se consumen por fuente, no compilan a `dist`.
 - Las apps consumen libs con dependencias `workspace:*` y nombres `@template/<pkg>`.
 - Las libs exponen código mediante `exports`, por ejemplo `"./*": "./src/*.ts"`.
 
@@ -128,7 +134,7 @@ bun run --filter '@template/api' test:e2e
 
 # Lib compartida
 bun run --filter '@template/utils' typecheck
-bun run --filter '@template/dto' build
+bun run --filter '@template/dto' typecheck
 
 # Todas las apps / libs a la vez
 bun run all:apps typecheck
@@ -145,17 +151,20 @@ Reglas prácticas:
 ## Imports entre paquetes
 
 - Código interno del paquete: `#src/*` mediante el campo `imports` del `package.json` del paquete.
-- Alternativa interna aceptada: `baseUrl` apuntando a `src/*` cuando el paquete lo configure.
 - Código entre paquetes: `@template/<pkg>` con dependencia `workspace:*`.
 - Versiones externas compartidas: `catalog:` desde la raíz.
-- Bun ejecuta TypeScript directamente; por eso las libs pueden exponer archivos `.ts` explícitos en runtime.
+- **Sin extensión** en el especificador: el `exports` map de cada paquete
+  (`"./*"` → `"./src/*.ts"`) la agrega. Con `.ts` explícito el typecheck falla
+  con TS2307.
+- Bun ejecuta TypeScript directo, así que las libs se consumen por fuente y no
+  hace falta build previo.
 
 Ejemplo:
 
 ```ts
-import { Environments } from '@template/configs-envs/Environments.ts';
-import { PaginationDto } from '@template/dto/pagination.dto.ts';
-import { localHelper } from '#src/local-helper.ts';
+import { Environments } from '@template/configs-envs/Environments';
+import { PaginationDto } from '@template/dto/pagination.dto';
+import { localHelper } from '#src/local-helper';
 ```
 
 ## Crear un paquete nuevo
