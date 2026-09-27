@@ -37,8 +37,7 @@
 		"passport": "catalog:",
 		"passport-jwt": "catalog:",
 		"passport-local": "catalog:",
-		"typeorm": "catalog:",
-		"uuid": "catalog:"
+		"typeorm": "catalog:"
 	},
 	"devDependencies": {
 		"@nestjs/testing": "catalog:",
@@ -48,7 +47,7 @@
 		"@types/node": "catalog:",
 		"@types/passport-jwt": "catalog:",
 		"@types/passport-local": "catalog:",
-		"@types/uuid": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"uuid": "catalog:"
 	}
 }

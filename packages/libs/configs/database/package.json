@@ -26,7 +26,6 @@
 		"@nestjs/config": "catalog:",
 		"@nestjs/typeorm": "catalog:",
 		"@template/configs-envs": "workspace:*",
-		"dotenv": "catalog:",
 		"typeorm": "catalog:"
 	},
 	"devDependencies": {

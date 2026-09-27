@@ -63,8 +63,7 @@
 		"pg": "catalog:",
 		"reflect-metadata": "catalog:",
 		"rxjs": "catalog:",
-		"typeorm": "catalog:",
-		"uuid": "catalog:"
+		"typeorm": "catalog:"
 	},
 	"devDependencies": {
 		"@nestjs/testing": "catalog:",
@@ -75,7 +74,6 @@
 		"@types/passport-local": "catalog:",
 		"@types/pg": "catalog:",
 		"@types/supertest": "catalog:",
-		"@types/uuid": "catalog:",
 		"supertest": "catalog:",
 		"typescript": "catalog:"
 	}

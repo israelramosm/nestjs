@@ -14,7 +14,7 @@ import * as dotenv from 'dotenv';
 const envPath = path.join(__dirname, '..', '.env');
 
 if (fs.existsSync(envPath)) {
-	dotenv.config({ path: envPath });
+	dotenv.config({ path: envPath, quiet: true });
 }
 
 export { envPath };

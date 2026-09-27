@@ -1,9 +1,8 @@
-import 'dotenv/config';
+import '@template/configs-envs/load-env';
 import { DataSourceOptions } from 'typeorm';
 import { mysqlMigrations } from '#src/migrations/mysql/index';
 
 const mysqlConfig: DataSourceOptions = {
-	name: 'default',
 	type: 'mysql',
 	host: process.env.MYSQL_HOST,
 	port: Number(process.env.MYSQL_PORT ?? '3306'),

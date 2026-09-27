@@ -3,7 +3,6 @@ import { DataSourceOptions } from 'typeorm';
 import { pgMigrations } from '#src/migrations/pg/index';
 
 const pgdbConfig: DataSourceOptions = {
-	name: 'default',
 	type: 'postgres',
 	host: process.env.POSTGRES_HOST,
 	port: Number(process.env.POSTGRES_PORT ?? '5432'),
