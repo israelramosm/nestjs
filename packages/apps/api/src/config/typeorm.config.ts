@@ -1,10 +1,10 @@
+import pgdbConfig from '@template/configs-database/pgdb.config';
 import { DataSource } from 'typeorm';
-import pgdbConfig from '#src/config/pgdb.config';
 import { Password } from '#src/modules/passwords/entities/password.entity';
 import { Profile } from '#src/modules/profiles/entities/profile.entity';
 import { User } from '#src/modules/users/entities/user.entity';
 
-// import mysqldbConfig from '#src/config/mysqldb.config';
+// import mysqldbConfig from '@template/configs-database/mysqldb.config';
 
 /**
  * This file is used to work with the TypeORM CLI

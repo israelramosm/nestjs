@@ -1,6 +1,6 @@
 import '@template/configs-envs/load-env';
 import { DataSourceOptions } from 'typeorm';
-import { pgMigrations } from '#src/database/migrations/pg/index';
+import { pgMigrations } from '#src/migrations/pg/index';
 
 const pgdbConfig: DataSourceOptions = {
 	name: 'default',

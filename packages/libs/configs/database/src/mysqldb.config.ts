@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { DataSourceOptions } from 'typeorm';
-import { mysqlMigrations } from '#src/database/migrations/mysql/index';
+import { mysqlMigrations } from '#src/migrations/mysql/index';
 
 const mysqlConfig: DataSourceOptions = {
 	name: 'default',

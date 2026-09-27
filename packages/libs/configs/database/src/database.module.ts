@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import pgdbConfig from '#src/config/pgdb.config';
-// import mysqldbConfig from '#src/config/mysqldb.config';
+import pgdbConfig from '#src/pgdb.config';
+// import mysqldbConfig from '#src/mysqldb.config';
 
 @Module({
 	imports: [

@@ -1,7 +1,7 @@
 {
-	"name": "@template/api-redis",
+	"name": "@template/configs-database",
 	"version": "0.0.1",
-	"description": "Modulo NestJS de Redis (ioredis) configurado desde envs",
+	"description": "Configuracion de datasources TypeORM, modulo de base de datos y migraciones",
 	"private": true,
 	"type": "module",
 	"exports": {
@@ -24,7 +24,12 @@
 	"dependencies": {
 		"@nestjs/common": "catalog:",
 		"@nestjs/config": "catalog:",
+		"@nestjs/typeorm": "catalog:",
 		"@template/configs-envs": "workspace:*",
-		"ioredis": "catalog:"
+		"dotenv": "catalog:",
+		"typeorm": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:"
 	}
 }

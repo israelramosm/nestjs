@@ -22,7 +22,7 @@ bun run --filter '@template/api' test        # unit (bun test, mockea repos, sin
 bun run --filter '@template/api' test:e2e    # requiere DB activa
 bun run typecheck                  # tsc --noEmit en todos los paquetes
 bun run biome:check / biome:fix    # lint+format (reemplaza ESLint+Prettier)
-bun run --filter '@template/api' migration:generate src/database/migrations/pg/<Nombre>
+bun run --filter '@template/api' migration:generate ../../libs/configs/database/src/migrations/pg/<Nombre>
 ```
 
 No hay `build` global necesario para desarrollar: Bun corre `src/main.ts`
