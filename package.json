@@ -38,6 +38,7 @@
 			"passport-local": "^1.0.0",
 			"bcrypt": "^6.0.0",
 			"uuid": "^14.0.2",
+			"@types/bcrypt": "^5.0.2",
 			"@types/bun": "^1.4.2",
 			"@types/pg": "^8.11.6",
 			"@types/passport-jwt": "^4.0.1",

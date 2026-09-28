@@ -67,6 +67,7 @@
 	},
 	"devDependencies": {
 		"@nestjs/testing": "catalog:",
+		"@types/bcrypt": "catalog:",
 		"@types/bun": "catalog:",
 		"@types/express": "^5.0.0",
 		"@types/node": "catalog:",

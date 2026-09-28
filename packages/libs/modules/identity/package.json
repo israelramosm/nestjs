@@ -42,6 +42,7 @@
 	"devDependencies": {
 		"@nestjs/testing": "catalog:",
 		"@template/shared": "workspace:*",
+		"@types/bcrypt": "catalog:",
 		"@types/bun": "catalog:",
 		"@types/express": "^5.0.0",
 		"@types/node": "catalog:",
